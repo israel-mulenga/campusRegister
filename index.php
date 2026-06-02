@@ -23,7 +23,12 @@ $url = isset($_GET['url']) ? rtrim($_GET['url'], '/') : 'home';
 
 switch ($url) {
     case 'home' :
-        require_once 'app/views/home.php';
+        if (file_exists(__DIR__ . '/app/views/home.php')) {
+            require_once __DIR__ . '/app/views/home.php';
+        } else {
+            echo "<h1>Bienvenue sur le Portail d'Inscription en Ligne de l'Université</h1>
+                  <p>Cette page d'accueil est en cours de développement. Veuillez revenir plus tard pour découvrir les fonctionnalités du portail.</p>";
+        }
         break;
 
     case 'inscription' :
