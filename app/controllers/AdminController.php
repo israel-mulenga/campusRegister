@@ -115,7 +115,7 @@ class AdminController
     }
 
     /**
-     * Met à jour le statut d'un candidat
+     * Met à jour le statut d'un candidat et déclenche une notification
      */
     public function updateStatut()
     {
@@ -127,23 +127,66 @@ class AdminController
 
         $candidatId = isset($_POST['candidat_id']) ? (int) $_POST['candidat_id'] : 0;
         $statut = trim($_POST['statut'] ?? '');
+        $commentaire = trim($_POST['commentaire'] ?? '');
 
         if ($candidatId <= 0 || empty($statut)) {
             return ['error' => 'Données invalides'];
         }
 
-        $statutsValides = ['En attente', 'Approuvé', 'Rejeté'];
+        $statutsValides = ['En attente', 'Admis', 'Refusé'];
         if (!in_array($statut, $statutsValides, true)) {
             return ['error' => 'Statut invalide'];
         }
 
+        $candidat = $this->adminModel->getCandidatById($candidatId);
+        if (!$candidat) {
+            return ['error' => 'Candidat non trouvé'];
+        }
+
+        $ancienStatut = $candidat['statut'] ?? 'Non défini';
+
         $success = $this->adminModel->updateCandidatStatut($candidatId, $statut);
 
         if ($success) {
-            return ['success' => 'Statut mis à jour avec succès'];
+            $this->createNotification(
+                $candidatId,
+                'statut_change',
+                "Statut changé de '$ancienStatut' à '$statut'",
+                $commentaire,
+                $_SESSION['admin_id'] ?? null
+            );
+
+            return ['success' => 'Statut mis à jour et notification envoyée'];
         }
 
         return ['error' => 'Erreur lors de la mise à jour du statut'];
+    }
+
+    /**
+     * Crée une notification pour un candidat
+     */
+    private function createNotification($candidatId, $type, $titre, $message = '', $createdBy = null)
+    {
+        try {
+            $notification = [
+                'candidat_id' => $candidatId,
+                'type' => $type,
+                'titre' => $titre,
+                'message' => $message,
+                'created_by' => $createdBy,
+                'created_at' => date('Y-m-d H:i:s'),
+                'est_lue' => false,
+            ];
+
+            if (method_exists($this->adminModel, 'createNotification')) {
+                $this->adminModel->createNotification($notification);
+            }
+
+            return true;
+        } catch (\Exception $e) {
+            error_log('Erreur création notification: ' . $e->getMessage());
+            return false;
+        }
     }
 
     /**
