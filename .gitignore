@@ -7,5 +7,4 @@ config/config.local.php
 .env
 
 # Dépendances
-/vendor/
 config/database.php
