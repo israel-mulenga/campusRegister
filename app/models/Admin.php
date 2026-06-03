@@ -37,4 +37,11 @@ class Admin extends Model {
 
         return $stmt->execute($params);
     }
+
+    public function findByEmail($email) {
+        $query = "SELECT * FROM " . $this->table . " WHERE email = :email";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute(['email' => $email]);
+        return $stmt->fetch();
+    }
 }

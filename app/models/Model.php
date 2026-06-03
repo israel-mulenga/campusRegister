@@ -12,7 +12,7 @@ abstract class Model {
 
     public function findAll() {
         $query = "SELECT * FROM " . $this->table;
-        $stmt = $this->db->query($query);
+        $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll();
     }
