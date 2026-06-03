@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 namespace App\Middleware;
 
@@ -8,7 +8,7 @@ class AdminAuthMiddleware {
 
     public static function initSecureSession() {
         if (session_status() === PHP_SESSION_NONE) {
-            session_start();
+            startSecureSession();
         }
 
         if (!isset($_SESSION['session_initiated'])) {
@@ -52,8 +52,7 @@ class AdminAuthMiddleware {
 
         $_SESSION['admin_id'] = $admin['id'];
         $_SESSION['admin_email'] = $admin['email'];
-        $_SESSION['admin_nom'] = $admin['nom'] ?? '';
-        $_SESSION['admin_prenom'] = $admin['prenom'] ?? '';
+        $_SESSION['admin_username'] = $admin['username'] ?? '';
         $_SESSION['admin_token'] = bin2hex(random_bytes(self::TOKEN_LENGTH));
         $_SESSION['admin_login_time'] = time();
         $_SESSION['admin_last_activity'] = time();

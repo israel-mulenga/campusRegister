@@ -10,6 +10,10 @@ abstract class Model {
         $this->db = DatabaseConfig::getConnection();
     }
 
+    public function getDb() {
+        return $this->db;
+    }
+
     public function findAll() {
         $query = "SELECT * FROM " . $this->table;
         $stmt = $this->db->query($query);
