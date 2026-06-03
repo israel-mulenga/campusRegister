@@ -1,0 +1,64 @@
+:root {
+    --blue-primary: #0d3b66;
+    --blue-dark: #092a4a;
+    --sidebar-bg: #1d2d44;
+    --accent-orange: #ff9f1c;
+    --bg-light: #f4f6f9;
+    --text-dark: #333333;
+    --white: #ffffff;
+    --color-validate: #2ec4b6;
+    --color-reject: #e71d36;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+}
+
+/* Login Page */
+.login-container {
+    max-width: 400px;
+    margin: 80px auto;
+    padding: 30px;
+    background: var(--white);
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.login-container h2 {
+    color: var(--blue-primary);
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
+.form-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+
+.btn-submit { width: 100%; padding: 12px; background: var(--blue-primary); color: var(--white); border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+.btn-submit:hover { background: var(--blue-dark); }
+
+/* Dashboard Layout */
+.dashboard-wrapper { display: flex; min-height: 100vh; }
+aside { width: 260px; background: var(--sidebar-bg); color: var(--white); padding-top: 20px; }
+aside h3 { text-align: center; color: var(--white); margin-bottom: 30px; }
+aside a { display: block; color: #cbd5e1; padding: 15px 25px; text-decoration: none; }
+aside a:hover { background: rgba(255,255,255,0.05); color: var(--white); border-left: 4px solid var(--accent-orange); }
+
+main { flex: 1; padding: 40px; }
+.kpi-container { display: flex; gap: 20px; margin-bottom: 30px; }
+.kpi-card { flex: 1; background: var(--white); padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-top: 4px solid var(--blue-primary); }
+.kpi-card h4 { margin: 0; color: #64748b; }
+.kpi-card p { margin: 10px 0 0 0; font-size: 1.8rem; font-weight: bold; color: var(--blue-primary); }
+
+/* Table */
+table { width: 100%; border-collapse: collapse; background: var(--white); border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+th, td { padding: 15px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+th { background: #f8fafc; color: #64748b; }
+
+.btn { padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; color: white; margin-right: 5px; }
+.btn-validate { background: var(--color-validate); }
+.btn-reject { background: var(--color-reject); }
