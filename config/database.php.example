@@ -4,9 +4,9 @@
 
 class Database {
     private static $host = "localhost";
-    private static $db_name = "VOTRE_NOM_DE_BDD";
+    private static $db_name = "root";
     private static $username = "VOTRE_UTILISATEUR";
-    private static $password = "VOTRE_MOT_DE_PASSE";
+    private static $password = "";
     private static $conn = null;
 
     public static function getConnection() {
