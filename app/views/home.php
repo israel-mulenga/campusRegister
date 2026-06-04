@@ -38,6 +38,16 @@
             </a>
         </section>
 
+        <section id="chatbot" style="background-color: #ffffff; padding: 40px 20px; margin: 0 auto; max-width: 900px; box-shadow: 0 0 12px rgba(0,0,0,0.05); border-radius: 12px;">
+            <h2 style="text-align: center; color: #1F3864; margin-bottom: 20px;">Chatbot d'information</h2>
+            <p style="text-align: center; color: #333; margin-bottom: 20px;">Posez une question sur l'inscription, les filières ou le suivi de dossier.</p>
+            <form id="chatbot-form" style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+                <input id="chatbot-question" name="question" type="text" placeholder="Entrez votre question ici..." style="flex:1 1 300px; padding: 12px; border: 1px solid #ccc; border-radius: 8px;" />
+                <button type="submit" style="background-color: #1F3864; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer;">Poser la question</button>
+            </form>
+            <div id="chatbot-response" style="margin-top: 20px; min-height: 60px; padding: 16px; background: #f4f7fb; border-radius: 8px; border: 1px solid #d9e2ef; color: #1f3864;"></div>
+        </section>
+
         <!-- Section Filières : Cartes visuelles -->
         <section id="filieres" class="container" style="padding: 50px 20px;">
             <h2 style="text-align: center; color: #1F3864; margin-bottom: 40px;">Nos Facultes</h2>
