@@ -38,6 +38,23 @@
             <h2>Nos Facultés</h2>
             <div class="grid-filieres">
                 <article class="card">
+        <section id="chatbot" style="background-color: #ffffff; padding: 40px 20px; margin: 0 auto; max-width: 900px; box-shadow: 0 0 12px rgba(0,0,0,0.05); border-radius: 12px;">
+            <h2 style="text-align: center; color: #1F3864; margin-bottom: 20px;">Chatbot d'information</h2>
+            <p style="text-align: center; color: #333; margin-bottom: 20px;">Posez une question sur l'inscription, les filières ou le suivi de dossier.</p>
+            <form id="chatbot-form" style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+                <input id="chatbot-question" name="question" type="text" placeholder="Entrez votre question ici..." style="flex:1 1 300px; padding: 12px; border: 1px solid #ccc; border-radius: 8px;" />
+                <button type="submit" style="background-color: #1F3864; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer;">Poser la question</button>
+            </form>
+            <div id="chatbot-response" style="margin-top: 20px; min-height: 60px; padding: 16px; background: #f4f7fb; border-radius: 8px; border: 1px solid #d9e2ef; color: #1f3864;"></div>
+        </section>
+
+        <!-- Section Filières : Cartes visuelles -->
+        <section id="filieres" class="container" style="padding: 50px 20px;">
+            <h2 style="text-align: center; color: #1F3864; margin-bottom: 40px;">Nos Facultes</h2>
+            <div class="grid-filieres" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+                
+                <!-- Carte Filière 1 -->
+                <article class="card" style="border: 1px solid #ddd; padding: 20px; border-radius: 8px;">
                     <h3>Sciences Informatiques</h3>
                     <p>Formation dans les technologies numériques et le développement informatique.</p>
                     <a href="app/views/inscription.php">S'inscrire en Génie Logiciel</a>
