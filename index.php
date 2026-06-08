@@ -15,6 +15,9 @@ if (file_exists(__DIR__ . '/app/controllers/CandidatController.php')) {
 if (file_exists(__DIR__ . '/app/controllers/ChatbotController.php')) {
     require_once __DIR__ . '/app/controllers/ChatbotController.php';
 }
+if (file_exists(__DIR__ . '/app/controllers/NotificationController.php')) {
+    require_once __DIR__ . '/app/controllers/NotificationController.php';
+}
 if (file_exists(__DIR__ . '/app/controllers/AdminController.php')) {
     require_once __DIR__ . '/app/controllers/AdminController.php';
 }
