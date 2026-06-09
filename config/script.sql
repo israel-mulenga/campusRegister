@@ -33,18 +33,18 @@ CREATE TABLE IF NOT EXISTS candidat (
   token           VARCHAR(64) UNIQUE,
   numero_dossier  VARCHAR(20) UNIQUE,
   date_creation   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (id_filiere) REFERENCES filieres(id) ON DELETE SET NULL
+  FOREIGN KEY (id_filiere) REFERENCES filiere(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ── Table 3 : notification ───────────────────────────────────
 CREATE TABLE IF NOT EXISTS notification (
   id          INT AUTO_INCREMENT PRIMARY KEY,
-  idCandidat INT NOT NULL,
+  id_candidat INT NOT NULL,
   canal       ENUM('email','sms') DEFAULT 'email',
   contenu     TEXT,
   date_envoi  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   statut      ENUM('envoye','echoue') DEFAULT 'envoye',
-  FOREIGN KEY (id_candidat) REFERENCES candidats(id) ON DELETE CASCADE
+  FOREIGN KEY (id_candidat) REFERENCES candidat(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ── Table 4 : chatbot_faq ─────────────────────────────────────

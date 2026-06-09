@@ -1,8 +1,9 @@
 <?php
 
-require_once __DIR__ ."../models/Candidat.php";
-require_once __DIR__ ."../models/Filiere.php";
-require_once __DIR__ ."../../config/database.php";
+require_once __DIR__ ."/../models/Candidat.php";
+require_once __DIR__ ."/../models/Filiere.php";
+require_once __DIR__ ."/../../config/database.php";
+require_once __DIR__ ."/../helpers/Validator.php";
 
 class InscriptionController {
 
@@ -10,7 +11,11 @@ class InscriptionController {
         $filieres = Filiere::findAll();
         $errors   = flash('errors') ? json_decode(flash('errors'), true) : [];
         $old      = flash('old')    ? json_decode(flash('old'), true)    : [];
+        $page     = 'pre-inscription';
+
+        require __DIR__ . '/../../templates/components/header.php';
         require __DIR__ . '/../views/inscription/formulaire.php';
+        require __DIR__ . '/../../templates/components/footer.php';
     }
 
     public function store(): void {
@@ -18,6 +23,8 @@ class InscriptionController {
 
         $data   = $_POST;
         $errors = [];
+
+        $candidatModel = new Candidat();
 
         // ── Validation ────────────────────────────────────────
         $required = ['nom','prenom','email','id_filiere'];
@@ -29,7 +36,7 @@ class InscriptionController {
         if (empty($errors['email']) && !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
             $errors['email'] = 'Adresse email invalide.';
         }
-        if (empty($errors['email']) && Candidat::findByEmail($data['email'])) {
+        if (empty($errors['email']) && $candidatModel->findByEmail($data['email'])) {
             $errors['email'] = 'Cette adresse email est déjà enregistrée.';
         }
         if (!empty($data['telephone']) && !preg_match('/^(\+243|0)[0-9]{9}$/', preg_replace('/\s/','',$data['telephone']))) {
@@ -44,7 +51,7 @@ class InscriptionController {
 
         // ── Sauvegarde ────────────────────────────────────────
         $token = generateToken(16);
-        $id    = Candidat::create([
+        $id    = $candidatModel->save([
             'nom'             => sanitize($data['nom']),
             'prenom'          => sanitize($data['prenom']),
             'email'           => strtolower(trim($data['email'])),
@@ -63,7 +70,7 @@ class InscriptionController {
         $db->prepare("UPDATE candidat SET numero_dossier = ? WHERE id = ?")
            ->execute([generateNumeroDossier($id), $id]);
 
-        $candidat = Candidat::findWithFiliere($id);
+        $candidat = $candidatModel->findWithFiliere($id);
 
         // ── Notification email ────────────────────────────────
         try {
@@ -102,6 +109,10 @@ class InscriptionController {
                 $error = 'Veuillez renseigner votre email et votre token.';
             }
         }
+
+        $page = 'suivi-inscription';
+        require __DIR__ . '/../../templates/components/header.php';
         require __DIR__ . '/../views/inscription/suivi.php';
+        require __DIR__ . '/../../templates/components/footer.php';
     }
 }

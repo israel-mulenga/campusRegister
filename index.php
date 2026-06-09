@@ -9,8 +9,8 @@ startSecureSession();
 require_once 'config/database.php';
 require_once 'app/models/Model.php';
 
-if (file_exists(__DIR__ . '/app/controllers/CandidatController.php')) {
-    require_once __DIR__ . '/app/controllers/CandidatController.php';
+if (file_exists(__DIR__ . '/app/controllers/InscriptionController.php')) {
+    require_once __DIR__ . '/app/controllers/InscriptionController.php';
 }
 if (file_exists(__DIR__ . '/app/controllers/ChatbotController.php')) {
     require_once __DIR__ . '/app/controllers/ChatbotController.php';
@@ -35,25 +35,25 @@ switch ($url) {
         break;
 
     case 'inscription' :
-        if (class_exists('CandidatController')) {
-            $controller = new CandidatController();
+        if (class_exists('InscriptionController')) {
+            $controller = new InscriptionController();
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $controller->store();
             } else {
                 $controller->index();
             }
         } else {
-            echo "Erreur : CandidatController (Dinovic) n'est pas encore integré.";
+            echo "Erreur : InscriptionController n'est pas encore intégré.";
         }
         break;
 
     case 'suivi-dossier' :
         // suivi du status du dossier du candidat
-        if (class_exists('CandidatController')) {
-            $controller = new CandidatController();
-            $controller->show();
+        if (class_exists('InscriptionController')) {
+            $controller = new InscriptionController();
+            $controller->suivi();
         } else {
-            echo "Erreur : CandidatController (Dinovic) n'est pas encore integré.";
+            echo "Erreur : InscriptionController n'est pas encore intégré.";
         }
         break;
 

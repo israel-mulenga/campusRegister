@@ -3,7 +3,7 @@
 require_once __DIR__ . '/Model.php';
 
 class Notification extends Model {
-    protected $table = 'notification';
+    protected static $table = 'notification';
 
     public function save(int $id_candidat, string $canal, string $contenu, string $statut = 'envoye'): void {
         $query = "INSERT INTO " . $this->table . " (id_candidat, canal, contenu, statut) VALUES (:id_candidat, :canal, :contenu, :statut)";

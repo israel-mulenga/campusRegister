@@ -3,7 +3,7 @@
 require_once __DIR__ . '/Model.php';
 
 class Admin extends Model {
-    protected $table = "administrateur";
+    protected static $table = "administrateur";
 
     public function save(array $data) {
         // Hash the password before saving

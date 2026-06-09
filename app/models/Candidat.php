@@ -3,7 +3,7 @@
 require_once __DIR__ . '/Model.php';
 
 class Candidat extends Model {
-    protected $table = 'candidat';
+    protected static $table = 'candidat';
 
     public function save(array $data): int {
         $query = "INSERT INTO " . $this->table . " (nom, prenom, email, telephone, date_naissance, lieu_origine, dossier_diplome, etablissement, id_filiere, statut, token, numero_dossier) VALUES (:nom, :prenom, :email, :telephone, :date_naissance, :lieu_origine, :dossier_diplome, :etablissement, :id_filiere, :statut, :token, :numero_dossier)";
@@ -50,15 +50,15 @@ class Candidat extends Model {
                     FROM candidat c
                     LEFT JOIN filiere f ON c.id_filiere = f.id
                     WHERE c.token = :token";
-        $stmt = $this->db->prepare($query);
+        $stmt = self::$db->prepare($query);
         $stmt->execute(['token' => $token]);
         $row = $stmt->fetch();
         return $row ? $row : null;
     }
 
     public function findByEmail(string $email): ?array {
-        $query = "SELECT * FROM candidats WHERE email = :email";
-        $stmt = $this->db->prepare($query);
+        $query = "SELECT * FROM candidat WHERE email = :email";
+        $stmt = self::$db->prepare($query);
         $stmt->execute(['email' => $email]);
         $row = $stmt->fetch();
         return $row ? $row : null;
@@ -76,7 +76,7 @@ class Candidat extends Model {
 
     public function updateStatut(int $id, string $statut): bool {
         $query = "UPDATE candidat SET statut = :statut WHERE id = :id";
-        $stmt = $this->db->prepare($query);
+        $stmt = self::$db->prepare($query);
         return $stmt->execute(['statut' => $statut, 'id' => $id]);
     }
 
@@ -101,7 +101,7 @@ class Candidat extends Model {
 
         $whereSQL = $where ? 'WHERE ' . implode(' AND ', $where) : '';
         $countSQL = "SELECT COUNT(*) FROM candidats c $whereSQL";
-        $s = $this->$db->prepare($countSQL);
+        $s = self::$db->prepare($countSQL);
         $s->execute($params);
         $total = (int)$s->fetchColumn();
 
@@ -113,7 +113,7 @@ class Candidat extends Model {
             ORDER BY c.date_creation DESC
             LIMIT ? OFFSET ?
         ";
-        $stmt = $this->$db->prepare($sql);
+        $stmt = self::$db->prepare($sql);
         $allParams = array_merge($params, [$perPage, $offset]);
         $stmt->execute($allParams);
 
@@ -127,13 +127,13 @@ class Candidat extends Model {
 
     public function statsParFiliere(): array {
         $query = "SELECT * FROM vue_stats_filieres ORDER BY nb_candidats DESC";
-        $stmt = $this->$db->query($query);
+        $stmt = self::$db->query($query);
         return $stmt->fetchAll();
     }
 
     public function statsParStatut(): array {
         $query = "SELECT * FROM vue_stats_statuts";
-        $stmt = $this->$db->query($query);
+        $stmt = self::$db->query($query);
         return $stmt->fetchAll();
     }
 
@@ -143,7 +143,7 @@ class Candidat extends Model {
             WHERE date_creation >= DATE_SUB(NOW(), INTERVAL ? DAY)
             GROUP BY DATE(date_creation)
             ORDER BY jour ASC";
-        $stmt = $this->$db->prepare($query);
+        $stmt = self::$db->prepare($query);
         $stmt->execute([$days]);
         return $stmt->fetchAll();
     }
@@ -153,7 +153,7 @@ class Candidat extends Model {
             FROM candidats c
             LEFT JOIN filieres f ON c.id_filiere = f.id
             WHERE c.id = ?";
-        $stmt = $this->$db->prepare($query);
+        $stmt = self::$db->prepare($query);
         $stmt->execute([$id]);
         $row = $stmt->fetch();
         return $row ? $row : null;
@@ -171,7 +171,7 @@ class Candidat extends Model {
             $params[] = $filters['id_filiere'];
         }
         $whereSQL = $where ? 'WHERE ' . implode(' AND ', $where) : '';
-        $stmt = $this->$db->prepare("SELECT * FROM candidats $whereSQL");
+        $stmt = self::$db->prepare("SELECT * FROM candidats $whereSQL");
         $stmt->execute($params);
         return $stmt->fetchAll();
     }

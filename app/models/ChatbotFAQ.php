@@ -3,7 +3,7 @@
 require_once __DIR__ . '/Model.php';
 
 class ChatbotFAQ extends Model {
-    protected $table = 'chatbot_faq';
+    protected static $table = 'chatbot_faq';
 
     public function getAllKeywords() {
         return $this->findAll();
@@ -46,7 +46,7 @@ class ChatbotFAQ extends Model {
             return null;
         }
 
-        $rows     = $this->$db->query("SELECT * FROM chatbot_faq")->fetchAll();
+        $rows     = $this->db->query("SELECT * FROM chatbot_faq")->fetchAll();
         $best     = null;
         $bestScore = 0;
 

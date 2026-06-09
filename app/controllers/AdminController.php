@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__ ."../models/Admin.php";
-require_once __DIR__ ."../helpers/Validator.php";
-require_once __DIR__ ."../models/Filiere.php";
+require_once __DIR__ ."/../models/Admin.php";
+require_once __DIR__ ."/../helpers/Validator.php";
+require_once __DIR__ ."/../models/Filiere.php";
 
 class AdminController {
 

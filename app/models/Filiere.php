@@ -3,7 +3,7 @@
 require_once __DIR__ . '/Model.php';
 
 class Filiere extends Model {
-    protected $table = 'filiere';
+    protected static $table = 'filiere';
 
     public function save(array $data): bool {
         $query = "INSERT INTO " . $this->table . " (nom, description, conditions, place_max) VALUES (:nom, :description, :conditions, :place_max)";

@@ -3,38 +3,49 @@
 require_once __DIR__ . '/../../config/database.php';
 
 abstract class Model {
-    protected $db;
-    protected $table;
+    protected static $db;
+    protected static $table;
 
     public function __construct() {
-        $this->db = DatabaseConfig::getConnection();
+        self::$db = DatabaseConfig::getConnection();
     }
 
-    public function findAll(): array {
-        $query = "SELECT * FROM " . $this->table . " ORDER BY id DESC";
-        $stmt = $this->db->prepare($query);
+    protected static function getDb() {
+        if (self::$db == null){
+            self::$db = DatabaseConfig::getConnection();
+        }
+        return self::$db;
+    }
+
+    public static function findAll(): array {
+        $db = self::getDb();
+        $query = "SELECT * FROM " . static::$table . " ORDER BY id DESC";
+        $stmt = self::$db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll();
     }
 
-    public function findById($id): ?array {
-        $query = "SELECT * FROM " . $this->table . " WHERE id = :id";
-        $stmt = $this->db->prepare($query);
+    public static function findById($id): ?array {
+        $db = self::getDb();
+        $query = "SELECT * FROM " . static::$table . " WHERE id = :id";
+        $stmt = self::$db->prepare($query);
         $stmt->execute(['id' => $id]);
         $row = $stmt->fetch();
         return $row ? $row : null;
     }
 
-    public function count(): int {
-        $query = "SELECT COUNT(*) as count FROM " . $this->table;
-        $stmt = $this->db->prepare($query);
+    public static function count(): int {
+        $db = self::getDb();
+        $query = "SELECT COUNT(*) as count FROM " . static::$table;
+        $stmt = self::$db->prepare($query);
         $stmt->execute();
-        return (int)$stmt->fechColumn();
+        return (int)$stmt->fetchColumn();
     }
 
-    public function deleteById($id): bool {
-        $query = "DELETE FROM " . $this->table . " WHERE id = :id";
-        $stmt = $this->db->prepare($query);
+    public static function deleteById($id): bool {
+        $db = self::getDb();
+        $query = "DELETE FROM " . static::$table . " WHERE id = :id";
+        $stmt = self::$db->prepare($query);
         return $stmt->execute(['id' => $id]);
     }
     
