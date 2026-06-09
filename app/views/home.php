@@ -120,6 +120,15 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'home';
             }
             break;
 
+        case 'admin-dashboard':
+            if (file_exists('app/controllers/AdminController.php')) {
+                require_once 'app/controllers/AdminController.php';
+                $controller = new AdminController();
+                $controller->dashboard();
+            }
+            exit(); // Bloque l'exécution du reste de la page d'accueil
+            break;
+
         // --- CAS PAR DÉFAUT : ACCUEIL (Carrousel, Facultés, Actus...) ---
         case 'home':
         default:
