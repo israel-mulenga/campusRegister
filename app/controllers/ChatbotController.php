@@ -18,7 +18,9 @@ class ChatbotController {
             return;
         }
 
-        $response = ChatbotFaq::search($question);
+        $chatbotFaq = new ChatbotFAQ();
+        $response   = $chatbotFaq->search($question);
+
         if (!$response) {
             $response = "Je n'ai pas trouvé de réponse à votre question. 🤔\n\nPour une aide personnalisée, contactez-nous :\n📧 info@udbl.ac.cd\n📞 +243 810 000 000\n🕐 Lun-Ven 8h-16h | Sam 8h-12h";
         }

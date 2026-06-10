@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS filiere (
   nom         VARCHAR(100) NOT NULL,
   description TEXT,
   conditions  TEXT,
+  nom_faculte ENUM("Sciences Informatiques", "Théologie", "Science de l'homme et de la societé", "Gestion et Ingénierie Finqncière") DEFAULT "Sciences Informatiques",
   places_max  INT DEFAULT 50
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -86,30 +87,36 @@ CREATE OR REPLACE VIEW vue_stats_statuts AS
   GROUP BY statut;
 
 -- ── SEEDS : filières UDBL ─────────────────────────────────────
-INSERT INTO filiere (nom, description, conditions, places_max) VALUES
-('Génie Logiciel',
- 'Formation en développement logiciel, algorithmique et systèmes d\'information.',
- 'Diplôme d\'État avec mention en mathématiques ou sciences. Test d\'aptitude requis.',
+INSERT INTO filiere (nom, description, conditions, nom_faculte, places_max) VALUES
+("Génie Logiciel",
+ "Formation en développement logiciel, algorithmique et systèmes d\'information.",
+ "Diplôme d\'État avec mention en mathématiques ou sciences. Test d\'aptitude requis.",
+ "Sciences Informatiques",
  60),
-('Sciences de Gestion',
- 'Formation en management, comptabilité, finance et économie d\'entreprise.',
- 'Diplôme d\'État toutes sections. Entretien de motivation.',
+("Sciences de Gestion",
+ "Formation en management, comptabilité, finance et économie d\'entreprise.",
+ "Diplôme d\'État toutes sections. Entretien de motivation.",
+ "Gestion et Ingénierie Finqncière",
  80),
-('Droit',
- 'Formation juridique générale incluant le droit congolais, civil et commercial.',
- 'Diplôme d\'État toutes sections. Bonne expression écrite requise.',
+("Droit",
+ "Formation juridique générale incluant le droit congolais, civil et commercial.",
+ "Diplôme d\'État toutes sections. Bonne expression écrite requise.",
+ "Science de l'homme et de la societé",
  100),
-('Sciences de l\'Éducation',
- 'Formation des enseignants et cadres pédagogiques pour l\'enseignement supérieur.',
- 'Diplôme d\'État. Expérience en enseignement appréciée.',
+("Sciences de l\'Éducation",
+ "Formation des enseignants et cadres pédagogiques pour l\'enseignement supérieur.",
+ "Diplôme d\'État. Expérience en enseignement appréciée.",
+ "Science de l'homme et de la societé",
  70),
-('Médecine Vétérinaire',
- 'Formation en santé animale, médecine vétérinaire et production animale.',
- 'Diplôme d\'État avec mention en biologie ou sciences naturelles.',
+("Médecine Vétérinaire",
+ "Formation en santé animale, médecine vétérinaire et production animale.",
+ "Diplôme d\'État avec mention en biologie ou sciences naturelles.",
+ "Science de l'homme et de la societé",
  40),
-('Architecture',
- 'Formation en conception architecturale, urbanisme et construction.',
- 'Diplôme d\'État. Aptitudes en dessin technique requises.',
+("Architecture",
+ "Formation en conception architecturale, urbanisme et construction.",
+ "Diplôme d\'État. Aptitudes en dessin technique requises.",
+ "Science de l'homme et de la societé",
  45);
 
 -- ── SEEDS : FAQ chatbot ───────────────────────────────────────

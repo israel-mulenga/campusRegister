@@ -7,20 +7,22 @@ abstract class Model {
     protected static $table;
 
     public function __construct() {
-        self::$db = DatabaseConfig::getConnection();
+        if (static::$db === null) {
+            static::$db = DatabaseConfig::getConnection();
+        }
     }
 
     protected static function getDb() {
-        if (self::$db == null){
-            self::$db = DatabaseConfig::getConnection();
+        if (static::$db === null) {
+            static::$db = DatabaseConfig::getConnection();
         }
-        return self::$db;
+        return static::$db;
     }
 
     public static function findAll(): array {
-        $db = self::getDb();
+        $db = static::getDb();
         $query = "SELECT * FROM " . static::$table . " ORDER BY id DESC";
-        $stmt = self::$db->prepare($query);
+        $stmt = $db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll();
     }

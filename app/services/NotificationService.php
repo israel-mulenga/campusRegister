@@ -4,6 +4,7 @@
 require_once __DIR__ . '/../../vendor/PHPMailer/PHPMailer.php';
 require_once __DIR__ . '/../../vendor/PHPMailer/SMTP.php';
 require_once __DIR__ . '/../../vendor/PHPMailer/Exception.php';
+require_once __DIR__ . '/../models/Notification.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;

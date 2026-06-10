@@ -47,6 +47,13 @@ switch ($url) {
         }
         break;
 
+    case 'inscription/confirmation' :
+        if (class_exists('InscriptionController')) {
+            $controller = new InscriptionController();
+            $controller->confirmation();
+        }
+        break;
+
     case 'suivi-dossier' :
         // suivi du status du dossier du candidat
         if (class_exists('InscriptionController')) {
@@ -61,7 +68,7 @@ switch ($url) {
         // Endpoint AJAX reçoit les requêtes du chatbot en JSON et retourne les réponses en JSON
         if (class_exists('ChatbotController')) {
             $controller = new ChatbotController();
-            $controller->handleRequest();
+            $controller->respond();
         } else {
             header('Content-Type: application/json');
             echo json_encode(['error' => "ChatbotController (Jiresse) non disponible."]);

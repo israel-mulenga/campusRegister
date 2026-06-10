@@ -70,4 +70,4 @@
   </div>
 </div>
 
-<?php require __DIR__ . '/../../../templates/componentsfooter.php'; ?>
+<?php require __DIR__ . '/../../../templates/components/footer.php'; ?>

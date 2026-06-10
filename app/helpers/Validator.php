@@ -12,7 +12,14 @@
     }
 
     function redirect(string $path): void {
-        header('Location: ' . APP_URL . $path);
+        if (preg_match('/^https?:\/\//', $path)) {
+            $location = $path;
+        } elseif (str_starts_with($path, '/')) {
+            $location = $path;
+        } else {
+            $location = APP_URL . '/' . ltrim($path, '/');
+        }
+        header('Location: ' . $location);
         exit;
     }
 

@@ -10,8 +10,8 @@ class ChatbotFAQ extends Model {
     }
 
     public function save(string $mot_cle, string $reponse, string $categorie): bool {
-        $query = "INSERT INTO " . $this->table . " (mot_cle, reponse, categorie) VALUES (:mot_cle, :reponse, :categorie)";
-        $stmt = $this->db->prepare($query);
+        $query = "INSERT INTO " . static::table . " (mot_cle, reponse, categorie) VALUES (:mot_cle, :reponse, :categorie)";
+        $stmt = self::db->prepare($query);
         return $stmt->execute([
             'mot_cle' => $data['mot_cle'] ?? '',
             'reponse' => $data['reponse'] ?? '',
@@ -20,8 +20,8 @@ class ChatbotFAQ extends Model {
     }
 
     public function update(int $id, string $mot_cle, string $reponse, string $categorie): bool {
-        $query = "UPDATE " . $this->table . " SET mot_cle = :mot_cle, reponse = :reponse, categorie = :categorie WHERE id = :id";
-        $stmt = $this->db->prepare($query);
+        $query = "UPDATE " . static::table . " SET mot_cle = :mot_cle, reponse = :reponse, categorie = :categorie WHERE id = :id";
+        $stmt = self::db->prepare($query);
         return $stmt->execute([
             'id' => $id,
             'mot_cle' => $data['mot_cle'] ?? '',
@@ -46,7 +46,7 @@ class ChatbotFAQ extends Model {
             return null;
         }
 
-        $rows     = $this->db->query("SELECT * FROM chatbot_faq")->fetchAll();
+        $rows     = self::$db->query("SELECT * FROM chatbot_faq")->fetchAll();
         $best     = null;
         $bestScore = 0;
 

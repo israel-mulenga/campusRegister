@@ -4,13 +4,16 @@ require_once __DIR__ ."/../models/Candidat.php";
 require_once __DIR__ ."/../models/Filiere.php";
 require_once __DIR__ ."/../../config/database.php";
 require_once __DIR__ ."/../helpers/Validator.php";
+require_once __DIR__ ."/../services/NotificationService.php";
 
 class InscriptionController {
 
     public function index(): void {
         $filieres = Filiere::findAll();
-        $errors   = flash('errors') ? json_decode(flash('errors'), true) : [];
-        $old      = flash('old')    ? json_decode(flash('old'), true)    : [];
+        $errorsRaw = flash('errors');
+        $oldRaw    = flash('old');
+        $errors   = $errorsRaw ? json_decode($errorsRaw, true) : [];
+        $old      = $oldRaw    ? json_decode($oldRaw, true)    : [];
         $page     = 'pre-inscription';
 
         require __DIR__ . '/../../templates/components/header.php';
@@ -19,7 +22,7 @@ class InscriptionController {
     }
 
     public function store(): void {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') { redirect('/inscription'); }
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') { redirect('/?url=inscription'); }
 
         $data   = $_POST;
         $errors = [];
@@ -46,7 +49,7 @@ class InscriptionController {
         if ($errors) {
             flash('errors', json_encode($errors));
             flash('old',    json_encode($data));
-            redirect('/inscription');
+            redirect('/?url=inscription');
         }
 
         // ── Sauvegarde ────────────────────────────────────────
@@ -62,8 +65,15 @@ class InscriptionController {
             'etablissement'   => sanitize($data['etablissement'] ?? ''),
             'id_filiere'      => (int)$data['id_filiere'],
             'token'           => $token,
-            'numero_dossier'  => generateNumeroDossier($id ?? 0),
+            'numero_dossier'  => generateNumeroDossier(0),
         ]);
+
+        if (!$id) {
+            error_log('Candidat save failed: ' . json_encode($data));
+            flash('errors', json_encode(['general' => 'Une erreur est survenue lors de l’enregistrement.']));
+            flash('old', json_encode($data));
+            redirect('/?url=inscription');
+        }
 
         // Mettre à jour le numéro de dossier avec l'ID réel
         $db = DatabaseConfig::getConnection();
@@ -71,6 +81,13 @@ class InscriptionController {
            ->execute([generateNumeroDossier($id), $id]);
 
         $candidat = $candidatModel->findWithFiliere($id);
+
+        if (!$candidat) {
+            error_log('Candidat findWithFiliere returned null for id: ' . $id);
+            flash('errors', json_encode(['general' => 'Impossible de charger les informations de confirmation.']));
+            flash('old', json_encode($data));
+            redirect('/?url=inscription');
+        }
 
         // ── Notification email ────────────────────────────────
         try {
@@ -80,12 +97,12 @@ class InscriptionController {
         }
 
         $_SESSION['confirmation_candidat'] = $candidat;
-        redirect('/inscription/confirmation');
+        redirect('/?url=inscription/confirmation');
     }
 
     public function confirmation(): void {
         $candidat = $_SESSION['confirmation_candidat'] ?? null;
-        if (!$candidat) { redirect('/inscription'); }
+        if (!$candidat) { redirect('/?url=inscription'); }
         require __DIR__ . '/../views/inscription/confirmation.php';
     }
 
