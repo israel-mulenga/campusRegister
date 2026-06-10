@@ -1,11 +1,1 @@
-# Fichiers système
-.DS_Store
-Thumbs.db
-
-# Fichiers d'environnement et de configuration locale
-config/config.local.php
-.env
-
-# Dépendances
-/vendor/
 config/database.php
