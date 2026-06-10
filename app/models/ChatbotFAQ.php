@@ -2,69 +2,52 @@
 
 require_once __DIR__ . '/Model.php';
 
-class ChatbotFAQ extends Model {
+class ChatbotFaq extends Model {
     protected static $table = 'chatbot_faq';
 
-    public function getAllKeywords() {
-        return $this->findAll();
+    public static function getAllKeywords(): array {
+        return self::findAll();
     }
 
-    public function save(string $mot_cle, string $reponse, string $categorie): bool {
-        $query = "INSERT INTO " . static::table . " (mot_cle, reponse, categorie) VALUES (:mot_cle, :reponse, :categorie)";
-        $stmt = self::db->prepare($query);
-        return $stmt->execute([
-            'mot_cle' => $data['mot_cle'] ?? '',
-            'reponse' => $data['reponse'] ?? '',
-            'categorie' => $data['categorie'] ?? null,
-        ]);
+    public static function save(string $mot_cle, string $reponse, string $categorie): bool {
+        $db = self::getDb();
+        $stmt = $db->prepare("INSERT INTO chatbot_faq (mot_cle, reponse, categorie) VALUES (?,?,?)");
+        return $stmt->execute([$mot_cle, $reponse, $categorie]);
     }
 
-    public function update(int $id, string $mot_cle, string $reponse, string $categorie): bool {
-        $query = "UPDATE " . static::table . " SET mot_cle = :mot_cle, reponse = :reponse, categorie = :categorie WHERE id = :id";
-        $stmt = self::db->prepare($query);
-        return $stmt->execute([
-            'id' => $id,
-            'mot_cle' => $data['mot_cle'] ?? '',
-            'reponse' => $data['reponse'] ?? '',
-            'categorie' => $data['categorie'] ?? null,
-        ]);
+    public static function update(int $id, string $mot_cle, string $reponse, string $categorie): bool {
+        $db = self::getDb();
+        $stmt = $db->prepare("UPDATE chatbot_faq SET mot_cle=?, reponse=?, categorie=? WHERE id=?");
+        return $stmt->execute([$mot_cle, $reponse, $categorie, $id]);
     }
 
-    public function search(string $question): ?string {
+    public static function delete(int $id): bool {
+        return self::deleteById($id);
+    }
+
+    public static function search(string $question): ?string {
         $question = strtolower(trim($question));
         $question = preg_replace('/[^a-zA-ZÀ-ÿ\s]/u', ' ', $question);
-        $mots     = array_filter(explode(' ', $question), fn($m) => strlen($m) > 2);
+        $mots = array_filter(explode(' ', $question), fn($m) => strlen($m) > 2);
+        if (empty($mots)) return null;
 
-        if (empty($mots)) {
-            return null;
-        }
+        $stopwords = ['les','des','une','que','qui','est','sur','par','pour','dans','avec','cette','sont','vous','nous','mais','aussi','plus','très','bien','tout','pas','oui','non'];
+        $mots = array_values(array_diff($mots, $stopwords));
+        if (empty($mots)) return null;
 
-        $stopwords = ['les','des','une','que','qui','est','sur','par','pour','dans','avec','cette','sont','vous','nous','mais','aussi','plus','très','bien','tout','pas','oui','non','mon','ton','son','mes','tes','ses'];
-        $mots = array_diff($mots, $stopwords);
-
-        if (empty($mots)) {
-            return null;
-        }
-
-        $rows     = self::$db->query("SELECT * FROM chatbot_faq")->fetchAll();
-        $best     = null;
-        $bestScore = 0;
+        $db = self::getDb();
+        $rows = $db->query("SELECT * FROM chatbot_faq")->fetchAll(PDO::FETCH_ASSOC);
+        $best = null; $bestScore = 0;
 
         foreach ($rows as $row) {
             $keywords = strtolower($row['mot_cle']);
-            $score    = 0;
+            $score = 0;
             foreach ($mots as $mot) {
-                if (str_contains($keywords, $mot)) {
-                    $score++;
-                }
+                if (str_contains($keywords, $mot)) $score++;
             }
             $ratio = count($mots) > 0 ? $score / count($mots) : 0;
-            if ($ratio > $bestScore) {
-                $bestScore = $ratio;
-                $best      = $row['reponse'];
-            }
+            if ($ratio > $bestScore) { $bestScore = $ratio; $best = $row['reponse']; }
         }
-
         return $bestScore >= 0.3 ? $best : null;
     }
 }

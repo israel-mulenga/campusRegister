@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS filiere (
   nom         VARCHAR(100) NOT NULL,
   description TEXT,
   conditions  TEXT,
-  nom_faculte ENUM("Sciences Informatiques", "Théologie", "Science de l'homme et de la societé", "Gestion et Ingénierie Finqncière") DEFAULT "Sciences Informatiques",
+  nom_faculte ENUM("Sciences Informatiques", "Théologie", "Science de l'homme et de la societé", "Gestion et Ingénierie Financière") DEFAULT "Sciences Informatiques",
   places_max  INT DEFAULT 50
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS candidat (
   email           VARCHAR(150) NOT NULL UNIQUE,
   telephone       VARCHAR(20),
   date_naissance  DATE,
-  lieu_rigine    VARCHAR(150),
+  lieu_origine    VARCHAR(150),
   dernier_diplome VARCHAR(100),
   etablissement   VARCHAR(150),
   id_filiere      INT,
@@ -96,7 +96,7 @@ INSERT INTO filiere (nom, description, conditions, nom_faculte, places_max) VALU
 ("Sciences de Gestion",
  "Formation en management, comptabilité, finance et économie d\'entreprise.",
  "Diplôme d\'État toutes sections. Entretien de motivation.",
- "Gestion et Ingénierie Finqncière",
+ "Gestion et Ingénierie Financière",
  80),
 ("Droit",
  "Formation juridique générale incluant le droit congolais, civil et commercial.",

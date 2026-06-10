@@ -7,106 +7,106 @@ require_once 'config/session.php';
 startSecureSession();
 
 require_once 'config/database.php';
+require_once 'config/app.php';
+require_once 'app/helpers/Validator.php';
 require_once 'app/models/Model.php';
+require_once 'app/models/Candidat.php';
+require_once 'app/models/Admin.php';
+require_once 'app/models/Filiere.php';
+require_once 'app/models/Notification.php';
+require_once 'app/models/ChatbotFAQ.php';
 
-if (file_exists(__DIR__ . '/app/controllers/InscriptionController.php')) {
+if (file_exists(__DIR__ . '/app/controllers/InscriptionController.php'))
     require_once __DIR__ . '/app/controllers/InscriptionController.php';
-}
-if (file_exists(__DIR__ . '/app/controllers/ChatbotController.php')) {
+if (file_exists(__DIR__ . '/app/controllers/ChatbotController.php'))
     require_once __DIR__ . '/app/controllers/ChatbotController.php';
-}
-if (file_exists(__DIR__ . '/app/controllers/NotificationController.php')) {
-    require_once __DIR__ . '/app/controllers/NotificationController.php';
-}
-if (file_exists(__DIR__ . '/app/controllers/AdminController.php')) {
+if (file_exists(__DIR__ . '/app/controllers/AdminController.php'))
     require_once __DIR__ . '/app/controllers/AdminController.php';
-}
+if (file_exists(__DIR__ . '/app/services/NotificationService.php'))
+    require_once __DIR__ . '/app/services/NotificationService.php';
 
 $url = isset($_GET['url']) ? rtrim($_GET['url'], '/') : 'home';
 
 switch ($url) {
-    case 'home' :
-        if (file_exists(__DIR__ . '/app/views/home.php')) {
-            require_once __DIR__ . '/app/views/home.php';
-        } else {
-            echo "<h1>Bienvenue sur le Portail d'Inscription en Ligne de l'Université</h1>
-                  <p>Cette page d'accueil est en cours de développement. Veuillez revenir plus tard pour découvrir les fonctionnalités du portail.</p>";
-        }
+
+    // ── Public ──────────────────────────────────────────────
+    case 'home':
+        require_once __DIR__ . '/app/views/home.php';
         break;
 
-    case 'inscription' :
-        if (class_exists('InscriptionController')) {
-            $controller = new InscriptionController();
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $controller->store();
-            } else {
-                $controller->index();
-            }
-        } else {
-            echo "Erreur : InscriptionController n'est pas encore intégré.";
-        }
+    case 'inscription':
+        $ctrl = new InscriptionController();
+        ($_SERVER['REQUEST_METHOD'] === 'POST') ? $ctrl->store() : $ctrl->index();
         break;
 
-    case 'inscription/confirmation' :
-        if (class_exists('InscriptionController')) {
-            $controller = new InscriptionController();
-            $controller->confirmation();
-        }
+    case 'inscription/confirmation':
+        (new InscriptionController())->confirmation();
         break;
 
-    case 'suivi-dossier' :
-        // suivi du status du dossier du candidat
-        if (class_exists('InscriptionController')) {
-            $controller = new InscriptionController();
-            $controller->suivi();
-        } else {
-            echo "Erreur : InscriptionController n'est pas encore intégré.";
-        }
+    case 'suivi-dossier':
+        (new InscriptionController())->suivi();
         break;
 
-    case 'chatbot-api' :
-        // Endpoint AJAX reçoit les requêtes du chatbot en JSON et retourne les réponses en JSON
-        if (class_exists('ChatbotController')) {
-            $controller = new ChatbotController();
-            $controller->respond();
-        } else {
-            header('Content-Type: application/json');
-            echo json_encode(['error' => "ChatbotController (Jiresse) non disponible."]);
-        }
+    case 'chatbot-api':
+        $ctrl = new ChatbotController();
+        $ctrl->respond();
         break;
 
-    // Espace Administrateur
-    case 'admin-login' :
-        if (class_exists('AdminController')) {
-            $controller = new AdminController();
-            $controller->login();
-        }
+    // ── Admin ───────────────────────────────────────────────
+    case 'admin/login':
+        (new AdminController())->loginPage();
         break;
 
-    case 'admin-dashboard' :
-        if (class_exists('AdminController')) {
-            $controller = new AdminController();
-            $controller->dashboard();
-        }
+    case 'admin/login/post':
+        (new AdminController())->loginPost();
         break;
 
-    case 'admin-candidats' :
-        if (class_exists('AdminController')) {
-            $controller = new AdminController();
-            $controller->manageCandidats();
-        }
+    case 'admin/logout':
+        (new AdminController())->logout();
         break;
 
-    case 'admin-logout' :
-        if (class_exists('AdminController')) {
-            $controller = new AdminController();
-            $controller->logout();
-        }
+    case 'admin/dashboard':
+        (new AdminController())->dashboard();
+        break;
+
+    case 'admin/candidats':
+        (new AdminController())->candidats();
+        break;
+
+    case 'admin/candidats/statut':
+        (new AdminController())->updateStatut();
+        break;
+
+    case 'admin/notifications':
+        (new AdminController())->notifications();
+        break;
+
+    case 'admin/notifications/send':
+        (new AdminController())->sendNotification();
+        break;
+
+    case 'admin/chatbot':
+        (new AdminController())->chatbot();
+        break;
+
+    case 'admin/chatbot/add':
+        (new AdminController())->addFaq();
+        break;
+
+    case 'admin/chatbot/update':
+        (new AdminController())->updateFaq();
+        break;
+
+    case 'admin/chatbot/delete':
+        (new AdminController())->deleteFaq();
+        break;
+
+    case 'admin/export-csv':
+        (new AdminController())->exportCsv();
         break;
 
     default:
         http_response_code(404);
-        echo "<h1>404 - Page non trouvée</h1>";
+        require __DIR__ . '/app/views/errors/404.php';
         break;
-
 }
