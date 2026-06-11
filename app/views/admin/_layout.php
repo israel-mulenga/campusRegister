@@ -58,36 +58,36 @@
 <!-- ══ SIDEBAR ══════════════════════════════════════════════ -->
 <div id="sidebar">
     <div class="brand">
-        <img src="<?= APP_URL ?>/public/images/LOGO-UDBL1.webp" alt="UDBL">
+        <img src="public/images/LOGO-UDBL1.webp" alt="UDBL">
         <div><span>UDBL Admin</span><small>Pré-inscription</small></div>
     </div>
     <nav>
         <div class="nav-label">Principal</div>
-        <a href="<?= APP_URL ?>/index.php?url=admin/dashboard" class="nav-item <?= ($pageTitle==='Tableau de bord')?'active':'' ?>">
+        <a href="index.php?url=admin/dashboard" class="nav-item <?= ($pageTitle==='Tableau de bord')?'active':'' ?>">
             <i class="fas fa-tachometer-alt"></i> Tableau de bord
         </a>
-        <a href="<?= APP_URL ?>/index.php?url=admin/candidats" class="nav-item <?= ($pageTitle==='Candidats')?'active':'' ?>">
+        <a href="index.php?url=admin/candidats" class="nav-item <?= ($pageTitle==='Candidats')?'active':'' ?>">
             <i class="fas fa-users"></i> Candidats
         </a>
         <div class="nav-label">Outils</div>
-        <a href="<?= APP_URL ?>/index.php?url=admin/notifications" class="nav-item <?= ($pageTitle==='Notifications')?'active':'' ?>">
+        <a href="index.php?url=admin/notifications" class="nav-item <?= ($pageTitle==='Notifications')?'active':'' ?>">
             <i class="fas fa-bell"></i> Notifications
         </a>
-        <a href="<?= APP_URL ?>/index.php?url=admin/chatbot" class="nav-item <?= ($pageTitle==='Chatbot FAQ')?'active':'' ?>">
+        <a href="index.php?url=admin/chatbot" class="nav-item <?= ($pageTitle==='Chatbot FAQ')?'active':'' ?>">
             <i class="fas fa-robot"></i> Chatbot FAQ
         </a>
-        <a href="<?= APP_URL ?>/index.php?url=admin/export-csv" class="nav-item">
+        <a href="index.php?url=admin/export-csv" class="nav-item">
             <i class="fas fa-file-csv"></i> Exporter CSV
         </a>
         <div class="nav-label">Site</div>
-        <a href="<?= APP_URL ?>/index.php" class="nav-item" target="_blank">
+        <a href="index.php" class="nav-item" target="_blank">
             <i class="fas fa-globe"></i> Voir le site
         </a>
     </nav>
     <div class="sidebar-footer">
         <div class="admin-name"><i class="fas fa-user-circle me-1"></i><?= htmlspecialchars($_SESSION['admin_nom'] ?? 'Admin') ?></div>
         <div class="admin-role"><?= htmlspecialchars($_SESSION['admin_role'] ?? 'admin') ?></div>
-        <a href="<?= APP_URL ?>/index.php?url=admin/logout" class="btn btn-sm btn-outline-warning mt-2 w-100">
+        <a href="index.php?url=admin/logout" class="btn btn-sm btn-outline-warning mt-2 w-100">
             <i class="fas fa-sign-out-alt me-1"></i>Déconnexion
         </a>
     </div>

@@ -49,7 +49,7 @@ $success = flash('success');
             <i class="fas fa-list me-2 text-warning"></i>
             <?= $result['total'] ?> candidat<?= $result['total']>1?'s':'' ?> trouvé<?= $result['total']>1?'s':'' ?>
         </h6>
-        <a href="<?= APP_URL ?>/index.php?url=admin/export-csv" class="btn btn-sm btn-outline-success">
+        <a href="index.php?url=admin/export-csv" class="btn btn-sm btn-outline-success">
             <i class="fas fa-download me-1"></i>CSV
         </a>
     </div>
@@ -83,7 +83,7 @@ $success = flash('success');
                             </div>
                             <div class="modal-body pb-0">
                                 <p class="small text-muted mb-2">Candidat : <strong><?= htmlspecialchars($c['nom'].' '.$c['prenom']) ?></strong></p>
-                                <form method="POST" action="<?= APP_URL ?>/index.php?url=admin/candidats/statut">
+                                <form method="POST" action="index.php?url=admin/candidats/statut">
                                     <input type="hidden" name="id" value="<?= $c['id'] ?>">
                                     <select name="statut" class="form-select form-select-sm mb-3">
                                         <?php foreach ($statLabel as $k=>$v): ?>

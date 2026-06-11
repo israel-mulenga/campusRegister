@@ -7,7 +7,7 @@ class Candidat extends Model {
 
     public function save(array $data): int {
         $db = self::getDb();
-        $query = "INSERT INTO " . static::$table . " (nom, prenom, email, telephone, date_naissance, lieu_rigine, dernier_diplome, etablissement, id_filiere, statut, token, numero_dossier) VALUES (:nom, :prenom, :email, :telephone, :date_naissance, :lieu_rigine, :dernier_diplome, :etablissement, :id_filiere, :statut, :token, :numero_dossier)";
+        $query = "INSERT INTO " . static::$table . " (nom, prenom, email, telephone, date_naissance, lieu_origine, dernier_diplome, etablissement, id_filiere, statut, token, numero_dossier) VALUES (:nom, :prenom, :email, :telephone, :date_naissance, :lieu_origine, :dernier_diplome, :etablissement, :id_filiere, :statut, :token, :numero_dossier)";
         $stmt = $db->prepare($query);
         $stmt->execute([
             'nom' => $data['nom'] ?? null,
@@ -15,7 +15,7 @@ class Candidat extends Model {
             'email' => $data['email'] ?? null,
             'telephone' => $data['telephone'] ?? null,
             'date_naissance' => $data['date_naissance'] ?? null,
-            'lieu_rigine' => $data['lieu_origine'] ?? null,
+            'lieu_origine' => $data['lieu_origine'] ?? null,
             'dernier_diplome' => $data['dernier_diplome'] ?? null,
             'etablissement' => $data['etablissement'] ?? null,
             'id_filiere' => $data['id_filiere'] ?? null,
@@ -28,7 +28,7 @@ class Candidat extends Model {
 
     public function update($id, array $data): bool {
         $db = self::getDb();
-        $query = "UPDATE " . static::$table . " SET nom = :nom, prenom = :prenom, email = :email, telephone = :telephone, date_naissance = :date_naissance, lieu_origine = :lieu_origine, dossier_diplome = :dossier_diplome, etablissement = :etablissement, id_filiere = :id_filiere, statut = :statut, token = :token, numero_dossier = :numero_dossier WHERE id = :id";
+        $query = "UPDATE " . static::$table . " SET nom = :nom, prenom = :prenom, email = :email, telephone = :telephone, date_naissance = :date_naissance, lieu_origine = :lieu_origine, dernier_diplome = :dernier_diplome, etablissement = :etablissement, id_filiere = :id_filiere, statut = :statut, token = :token, numero_dossier = :numero_dossier WHERE id = :id";
         $stmt = $db->prepare($query);
         return $stmt->execute([
             'id' => $id,
@@ -38,7 +38,7 @@ class Candidat extends Model {
             'telephone' => $data['telephone'],
             'date_naissance' => $data['date_naissance'],
             'lieu_origine' => $data['lieu_origine'],
-            'dossier_diplome' => $data['dossier_diplome'],
+            'dernier_diplome' => $data['dernier_diplome'],
             'etablissement' => $data['etablissement'],
             'id_filiere' => $data['id_filiere'],
             'statut' => $data['statut'],
@@ -47,7 +47,7 @@ class Candidat extends Model {
         ]);
     }
 
-    public function findByToken(string $token): ?array {
+    public static function findByToken(string $token): ?array {
         $db = self::getDb();
         $query = "  SELECT c.*, f.nom as filiere_nom               
                     FROM candidat c
@@ -68,7 +68,7 @@ class Candidat extends Model {
         return $row ? $row : null;
     }
 
-    public function findByEmailAndToken(string $email, string $token): ?array {
+    public static function findByEmailAndToken(string $email, string $token): ?array {
         $db = self::getDb();
         $query = "SELECT c.*, f.nom as filiere_nom
             FROM candidat c
@@ -80,7 +80,7 @@ class Candidat extends Model {
         return $row ? $row : null;
     }
 
-    public function updateStatut(int $id, string $statut): bool {
+    public static function updateStatut(int $id, string $statut): bool {
         $db = self::getDb();
         $query = "UPDATE candidat SET statut = :statut WHERE id = :id";
         $stmt = $db->prepare($query);
@@ -133,21 +133,21 @@ class Candidat extends Model {
         ];
     }
 
-    public function statsParFiliere(): array {
+    public static function statsParFiliere(): array {
         $db = self::getDb();
         $query = "SELECT * FROM vue_stats_filieres ORDER BY nb_candidats DESC";
         $stmt = $db->query($query);
         return $stmt->fetchAll();
     }
 
-    public function statsParStatut(): array {
+    public static function statsParStatut(): array {
         $db = self::getDb();
         $query = "SELECT * FROM vue_stats_statuts";
         $stmt = $db->query($query);
         return $stmt->fetchAll();
     }
 
-    public function recentActivity(int $days = 7): array {
+    public static function recentActivity(int $days = 7): array {
         $db = self::getDb();
         $query = "SELECT DATE(date_creation) as jour, COUNT(*) as nb
             FROM candidat
@@ -159,7 +159,7 @@ class Candidat extends Model {
         return $stmt->fetchAll();
     }
 
-    public function findWithFiliere(int $id): ?array {
+    public static function findWithFiliere(int $id): ?array {
         $db = self::getDb();
         $query = "SELECT c.*, f.nom as filiere_nom
             FROM candidat c
@@ -171,7 +171,7 @@ class Candidat extends Model {
         return $row ? $row : null;
     }
 
-    public function getByFilters(array $filters = []): array {
+    public static function getByFilters(array $filters = []): array {
         $where  = [];
         $params = [];
         if (!empty($filters['statut'])) {
