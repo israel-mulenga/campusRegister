@@ -15,9 +15,13 @@
         if (preg_match('/^https?:\/\//', $path)) {
             $location = $path;
         } elseif (str_starts_with($path, '/')) {
-            $location = $path;
+            if (preg_match('#^/(index\.php)?\?.*#', $path)) {
+                $location = ltrim($path, '/');
+            } else {
+                $location = 'index.php?url=' . ltrim($path, '/');
+            }
         } else {
-            $location = APP_URL . '/' . ltrim($path, '/');
+            $location = $path;
         }
         header('Location: ' . $location);
         exit;

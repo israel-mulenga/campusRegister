@@ -68,7 +68,7 @@ foreach ($statsStatut as $s) $byStatut[$s['statut']] = (int)$s['nb'];
 <div class="card border-0 shadow-sm">
     <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
         <h6 class="mb-0 fw-bold text-muted"><i class="fas fa-user-clock me-2 text-warning"></i>Dernières inscriptions</h6>
-        <a href="<?= APP_URL ?>/index.php?url=admin/candidats" class="btn btn-sm btn-outline-primary">Voir tout</a>
+        <a href="index.php?url=admin/candidats" class="btn btn-sm btn-outline-primary">Voir tout</a>
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">

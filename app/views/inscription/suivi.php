@@ -38,7 +38,7 @@ $statuts = [
             <?php if (!$candidat_trouve): ?>
             <div class="card shadow-sm border-0" style="border-top:4px solid #003366!important;border-radius:12px;">
                 <div class="card-body p-4">
-                    <form method="POST" action="<?= APP_URL ?>/index.php?url=suivi-dossier">
+                    <form method="POST" action="<?= APP_URL ?>/?url=suivi-dossier">
                         <div class="mb-3">
                             <label class="form-label fw-bold" style="color:#003366">Adresse Email</label>
                             <div class="input-group">
@@ -164,7 +164,7 @@ $statuts = [
                     </div>
 
                     <div class="text-center">
-                        <a href="<?= APP_URL ?>/index.php?url=suivi-dossier" class="btn btn-outline-secondary btn-sm">
+                        <a href="<?= APP_URL ?>/?url=suivi-dossier" class="btn btn-outline-secondary btn-sm">
                             <i class="fas fa-arrow-left me-1"></i>Nouvelle recherche
                         </a>
                     </div>

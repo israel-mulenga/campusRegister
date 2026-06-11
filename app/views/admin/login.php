@@ -24,7 +24,7 @@
 <div class="container d-flex justify-content-center">
     <div class="login-card">
         <div class="login-header">
-            <img src="<?= APP_URL ?>/public/images/LOGO-UDBL1.webp" alt="Logo UDBL">
+            <img src="public/images/LOGO-UDBL1.webp" alt="Logo UDBL">
             <h4>Espace Administrateur</h4>
             <small>Université Don Bosco de Lubumbashi</small><br>
             <span class="badge-admin mt-2 d-inline-block">ACCÈS RESTREINT</span>
@@ -35,7 +35,7 @@
                     <i class="fas fa-exclamation-circle me-2"></i><?= htmlspecialchars($error) ?>
                 </div>
             <?php endif; ?>
-            <form method="POST" action="<?= APP_URL ?>/index.php?url=admin/login/post">
+            <form method="POST" action="index.php?url=admin/login/post">
                 <div class="mb-3">
                     <label class="form-label fw-semibold small text-muted">ADRESSE EMAIL</label>
                     <div class="input-group">
@@ -55,7 +55,7 @@
                 </button>
             </form>
             <div class="text-center mt-3">
-                <a href="<?= APP_URL ?>/index.php" class="text-muted small text-decoration-none">
+                <a href="index.php" class="text-muted small text-decoration-none">
                     <i class="fas fa-arrow-left me-1"></i>Retour au site
                 </a>
             </div>

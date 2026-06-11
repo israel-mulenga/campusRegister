@@ -6,14 +6,22 @@ function startSecureSession() {
 
     if (session_status() === PHP_SESSION_NONE) {
 
-        session_set_cookie_params([
+        $cookieHost = $_SERVER['HTTP_HOST'] ?? '';
+        $cookieHost = preg_replace('/:\d+$/', '', $cookieHost);
+
+        $cookieParams = [
             'lifetime' => 3600,
             'path' => '/',
-            'domain' => $_SERVER['HTTP_HOST'],
             'secure' => isset($_SERVER['HTTPS']),
             'httponly' => true,
             'samesite' => 'Strict'
-        ]);
+        ];
+
+        if ($cookieHost !== '') {
+            $cookieParams['domain'] = $cookieHost;
+        }
+
+        session_set_cookie_params($cookieParams);
 
         session_start();
     }

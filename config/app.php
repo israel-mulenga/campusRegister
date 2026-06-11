@@ -1,7 +1,7 @@
 <?php
 
 define('APP_NAME', 'UDBL Pré-inscription');
-define('APP_URL', 'http://localhost/campusRegister');
+define('APP_URL', 'http://localhost:8080');
 define('APP_ENV', 'development');
 
 // Email (Gmail SMTP)

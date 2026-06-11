@@ -18,7 +18,7 @@ require __DIR__ . '/_layout.php';
                 <h6 class="mb-0 fw-bold text-muted"><i class="fas fa-paper-plane me-2 text-warning"></i>Envoyer un email groupé</h6>
             </div>
             <div class="card-body">
-                <form method="POST" action="<?= APP_URL ?>/index.php?url=admin/notifications/send">
+                <form method="POST" action="index.php?url=admin/notifications/send">
                     <div class="mb-3">
                         <label class="form-label small fw-semibold">Destinataires</label>
                         <select name="groupe" class="form-select form-select-sm">

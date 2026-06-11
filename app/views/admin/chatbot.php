@@ -18,7 +18,7 @@ require __DIR__ . '/_layout.php';
                 <h6 class="mb-0 fw-bold text-muted"><i class="fas fa-plus-circle me-2 text-warning"></i>Nouvelle entrée FAQ</h6>
             </div>
             <div class="card-body">
-                <form method="POST" action="<?= APP_URL ?>/index.php?url=admin/chatbot/add">
+                <form method="POST" action="index.php?url=admin/chatbot/add">
                     <div class="mb-2">
                         <label class="form-label small fw-semibold">Mot(s)-clé(s)</label>
                         <input type="text" name="mot_cle" class="form-control form-control-sm" placeholder="ex: inscription inscrire comment" required>
@@ -57,7 +57,7 @@ require __DIR__ . '/_layout.php';
                             <td><span class="badge bg-light text-dark border" style="font-size:.65rem"><?= htmlspecialchars($faq['categorie']) ?></span></td>
                             <td class="text-center">
                                 <button class="btn btn-xs btn-outline-secondary py-0 px-1 me-1" data-bs-toggle="modal" data-bs-target="#editFaq<?= $faq['id'] ?>" title="Modifier"><i class="fas fa-edit fa-xs"></i></button>
-                                <form method="POST" action="<?= APP_URL ?>/index.php?url=admin/chatbot/delete" class="d-inline" onsubmit="return confirm('Supprimer cette entrée ?')">
+                                <form method="POST" action="index.php?url=admin/chatbot/delete" class="d-inline" onsubmit="return confirm('Supprimer cette entrée ?')">
                                     <input type="hidden" name="id" value="<?= $faq['id'] ?>">
                                     <button class="btn btn-xs btn-outline-danger py-0 px-1" title="Supprimer"><i class="fas fa-trash fa-xs"></i></button>
                                 </form>
@@ -71,7 +71,7 @@ require __DIR__ . '/_layout.php';
                                         <h6 class="modal-title mb-0">Modifier l'entrée</h6>
                                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                                     </div>
-                                    <form method="POST" action="<?= APP_URL ?>/index.php?url=admin/chatbot/update">
+                                    <form method="POST" action="index.php?url=admin/chatbot/update">
                                         <div class="modal-body">
                                             <input type="hidden" name="id" value="<?= $faq['id'] ?>">
                                             <div class="mb-2">
