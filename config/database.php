@@ -3,10 +3,10 @@
 // mais avec les informations de votre base de données en local.
 
 class DatabaseConfig {
-    private static $host = "localhost";
-    private static $db_name = "CAMPUSREGISTER_DB";
-    private static $username = "CAMPUS_USER";
-    private static $password = "1234";
+    private static $host = "mysql-udbl.alwaysdata.net";
+    private static $db_name = "udbl_campusregister";
+    private static $username = "udbl";
+    private static $password = "jesuisici";
     private static $conn = null;
 
     public static function getConnection() {
