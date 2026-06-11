@@ -98,6 +98,7 @@ class NotificationService {
     }
 
     private static function templateConfirmation(array $c): string {
+        $url_suivi = rtrim(APP_URL, '/') . '/index.php?url=suivi-dossier';
         return self::header() . "
         <p>Bonjour <strong>{$c['nom']} {$c['prenom']}</strong>,</p>
         <p>Nous avons bien reçu votre pré-inscription à l'Université Don Bosco de Lubumbashi pour l'année académique 2025-2026. 🎉</p>
@@ -108,7 +109,7 @@ class NotificationService {
             <strong>📊 Statut actuel :</strong> En attente de traitement
         </div>
         <p><strong>Gardez précieusement ce token</strong> — il vous servira à consulter l'état de votre dossier à tout moment.</p>
-        <a class='btn' href='" . APP_URL . "/inscription/suivi'>Suivre mon dossier</a>
+        <a class='btn' href='{$url_suivi}'>Suivre mon dossier</a>
         <p>Notre équipe traitera votre dossier dans les meilleurs délais. Vous recevrez une notification à chaque étape du processus.</p>
         <p>Cordialement,<br><strong>L'équipe d'admission – UDBL</strong></p>
         " . self::footer();
@@ -130,6 +131,7 @@ class NotificationService {
             ],
         ];
         $msg = $messages[$statut] ?? ['titre' => 'Mise à jour de votre dossier', 'corps' => 'Votre dossier a été mis à jour.'];
+        $url_suivi = rtrim(APP_URL, '/') . '/index.php?url=suivi-dossier';
 
         return self::header() . "
         <p>Bonjour <strong>{$c['nom']} {$c['prenom']}</strong>,</p>
@@ -139,17 +141,18 @@ class NotificationService {
             <strong>📊 Nouveau statut :</strong> " . self::statutLabel($statut) . "
         </div>
         <p>{$msg['corps']}</p>
-        <a class='btn' href='" . APP_URL . "/inscription/suivi'>Voir mon dossier</a>
+        <a class='btn' href='{$url_suivi}'>Suivre mon dossier</a>
         <p>Cordialement,<br><strong>L'équipe d'admission – UDBL</strong></p>
         " . self::footer();
     }
 
     private static function templateCustom(array $c, string $message): string {
+        $url_suivi = rtrim(APP_URL, '/') . '/index.php?url=suivi-dossier';
         return self::header() . "
         <p>Bonjour <strong>{$c['nom']} {$c['prenom']}</strong>,</p>
         <p>" . nl2br(htmlspecialchars($message)) . "</p>
         <div class='box'><strong>Dossier :</strong> {$c['numero_dossier']}</div>
-        <a class='btn' href='" . APP_URL . "/inscription/suivi'>Suivre mon dossier</a>
+        <a class='btn' href='{$url_suivi}'>Suivre mon dossier</a>
         <p>Cordialement,<br><strong>L'équipe d'admission – UDBL</strong></p>
         " . self::footer();
     }
