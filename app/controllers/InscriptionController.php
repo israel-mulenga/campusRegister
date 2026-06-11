@@ -27,8 +27,6 @@ class InscriptionController {
         $data   = $_POST;
         $errors = [];
 
-        $candidatModel = new Candidat();
-
         // ── Validation ────────────────────────────────────────
         $required = ['nom','prenom','email','id_filiere'];
         foreach ($required as $field) {
@@ -39,7 +37,7 @@ class InscriptionController {
         if (empty($errors['email']) && !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
             $errors['email'] = 'Adresse email invalide.';
         }
-        if (empty($errors['email']) && $candidatModel->findByEmail($data['email'])) {
+        if (empty($errors['email']) && Candidat::findByEmail(strtolower(trim($data['email'])))) {
             $errors['email'] = 'Cette adresse email est déjà enregistrée.';
         }
         if (!empty($data['telephone']) && !preg_match('/^(\+243|0)[0-9]{9}$/', preg_replace('/\s/','',$data['telephone']))) {
@@ -54,7 +52,7 @@ class InscriptionController {
 
         // ── Sauvegarde ────────────────────────────────────────
         $token = generateToken(16);
-        $id    = $candidatModel->save([
+        $id    = Candidat::save([
             'nom'             => sanitize($data['nom']),
             'prenom'          => sanitize($data['prenom']),
             'email'           => strtolower(trim($data['email'])),
@@ -69,21 +67,19 @@ class InscriptionController {
         ]);
 
         if (!$id) {
-            error_log('Candidat save failed: ' . json_encode($data));
-            flash('errors', json_encode(['general' => 'Une erreur est survenue lors de l’enregistrement.']));
+            flash('errors', json_encode(['general' => 'Une erreur est survenue lors de l\'enregistrement.']));
             flash('old', json_encode($data));
             redirect('/?url=inscription');
         }
 
-        // Mettre à jour le numéro de dossier avec l'ID réel
+        // Mise à jour du numéro de dossier avec l'ID réel
         $db = DatabaseConfig::getConnection();
         $db->prepare("UPDATE candidat SET numero_dossier = ? WHERE id = ?")
            ->execute([generateNumeroDossier($id), $id]);
 
-        $candidat = $candidatModel->findWithFiliere($id);
+        $candidat = Candidat::findWithFiliere($id);
 
         if (!$candidat) {
-            error_log('Candidat findWithFiliere returned null for id: ' . $id);
             flash('errors', json_encode(['general' => 'Impossible de charger les informations de confirmation.']));
             flash('old', json_encode($data));
             redirect('/?url=inscription');
@@ -103,6 +99,7 @@ class InscriptionController {
     public function confirmation(): void {
         $candidat = $_SESSION['confirmation_candidat'] ?? null;
         if (!$candidat) { redirect('/?url=inscription'); }
+        unset($_SESSION['confirmation_candidat']); // consommer la session
         require __DIR__ . '/../views/inscription/confirmation.php';
     }
 
@@ -118,13 +115,19 @@ class InscriptionController {
             if ($email && $token) {
                 $candidat = Candidat::findByEmailAndToken($email, $token);
                 if ($candidat) {
-                    $notifications = Notification::forCandidat($candidat['id']);
+                    // Stocker en session pour la page de suivi
+                    $_SESSION['suivi_candidat'] = $candidat;
                 } else {
                     $error = 'Aucun dossier trouvé avec ces identifiants. Vérifiez votre email et votre token.';
                 }
             } else {
                 $error = 'Veuillez renseigner votre email et votre token.';
             }
+        }
+
+        // Récupérer depuis session si déjà connecté
+        if (!$candidat && !empty($_SESSION['suivi_candidat'])) {
+            $candidat = Candidat::findWithFiliere($_SESSION['suivi_candidat']['id']);
         }
 
         $page = 'suivi-inscription';
