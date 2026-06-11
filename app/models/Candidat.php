@@ -23,7 +23,9 @@ class Candidat extends Model {
             'token' => $data['token'] ?? null,
             'numero_dossier' => $data['numero_dossier'] ?? null
         ]);
-        return (int)$db->lastInsertId();
+        // PostgreSQL requires the sequence name; MySQL uses no argument
+        $seqName = DatabaseConfig::getDriver() === 'pgsql' ? static::$table . '_id_seq' : null;
+        return (int)$db->lastInsertId($seqName);
     }
 
     public function update($id, array $data): bool {
@@ -93,7 +95,8 @@ class Candidat extends Model {
         $params = [];
 
         if (!empty($filters['search'])) {
-            $where[]  = "(c.nom LIKE ? OR c.prenom LIKE ? OR c.email LIKE ? OR c.numero_dossier LIKE ?)";
+            $likeOp = DatabaseConfig::getDriver() === 'pgsql' ? 'ILIKE' : 'LIKE';
+            $where[] = "(c.nom {$likeOp} ? OR c.prenom {$likeOp} ? OR c.email {$likeOp} ? OR c.numero_dossier {$likeOp} ?)";
             $s = '%' . $filters['search'] . '%';
             array_push($params, $s, $s, $s, $s);
         }
@@ -149,11 +152,19 @@ class Candidat extends Model {
 
     public static function recentActivity(int $days = 7): array {
         $db = self::getDb();
-        $query = "SELECT DATE(date_creation) as jour, COUNT(*) as nb
-            FROM candidat
-            WHERE date_creation >= DATE_SUB(NOW(), INTERVAL ? DAY)
-            GROUP BY DATE(date_creation)
-            ORDER BY jour ASC";
+        if (DatabaseConfig::getDriver() === 'pgsql') {
+            $query = "SELECT DATE(date_creation) as jour, COUNT(*) as nb
+                FROM candidat
+                WHERE date_creation >= NOW() - (? * INTERVAL '1 day')
+                GROUP BY DATE(date_creation)
+                ORDER BY jour ASC";
+        } else {
+            $query = "SELECT DATE(date_creation) as jour, COUNT(*) as nb
+                FROM candidat
+                WHERE date_creation >= DATE_SUB(NOW(), INTERVAL ? DAY)
+                GROUP BY DATE(date_creation)
+                ORDER BY jour ASC";
+        }
         $stmt = $db->prepare($query);
         $stmt->execute([$days]);
         return $stmt->fetchAll();
