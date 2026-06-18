@@ -180,7 +180,8 @@ INSERT INTO chatbot_faq (mot_cle, reponse, categorie) VALUES
  'général');
 
 -- ── SEED : super_admin (MDP: Admin2026!) ─────────────────────
+-- IMPORTANT: Change this password immediately after first login.
 INSERT INTO administrateur (nom, email, mot_de_passe_hash, role) VALUES
 ('Admin2026', 'admin@udbl.ac.cd',
- '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+ '$2y$10$ZsMarH2suZ3vuZ.RycWlHeAE4IbfAHYubDVctQV94mGEqBYMg6W72',
  'super_admin');

@@ -36,6 +36,7 @@
                 </div>
             <?php endif; ?>
             <form method="POST" action="index.php?url=admin/login/post">
+                <?= csrfField() ?>
                 <div class="mb-3">
                     <label class="form-label fw-semibold small text-muted">ADRESSE EMAIL</label>
                     <div class="input-group">

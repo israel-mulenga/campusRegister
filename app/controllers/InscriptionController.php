@@ -23,6 +23,7 @@ class InscriptionController {
 
     public function store(): void {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') { redirect('/?url=inscription'); }
+        verifyCsrf();
 
         $data   = $_POST;
         $errors = [];
@@ -59,7 +60,7 @@ class InscriptionController {
             'prenom'          => sanitize($data['prenom']),
             'email'           => strtolower(trim($data['email'])),
             'telephone'       => sanitize($data['telephone'] ?? ''),
-            'date_naissance'  => $data['date_naissance'] ?? null,
+            'date_naissance'  => (!empty($data['date_naissance']) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $data['date_naissance'])) ? $data['date_naissance'] : null,
             'lieu_origine'    => sanitize($data['lieu_origine'] ?? ''),
             'dernier_diplome' => sanitize($data['dernier_diplome'] ?? ''),
             'etablissement'   => sanitize($data['etablissement'] ?? ''),
@@ -112,6 +113,7 @@ class InscriptionController {
         $error         = '';
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            verifyCsrf();
             $email = strtolower(trim($_POST['email'] ?? ''));
             $token = trim($_POST['token'] ?? '');
 

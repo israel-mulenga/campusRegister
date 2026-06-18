@@ -19,6 +19,7 @@ require __DIR__ . '/_layout.php';
             </div>
             <div class="card-body">
                 <form method="POST" action="index.php?url=admin/notifications/send">
+                    <?= csrfField() ?>
                     <div class="mb-3">
                         <label class="form-label small fw-semibold">Destinataires</label>
                         <select name="groupe" class="form-select form-select-sm">

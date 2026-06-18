@@ -13,6 +13,11 @@
 
     function redirect(string $path): void {
         if (preg_match('/^https?:\/\//', $path)) {
+            $allowed = parse_url(APP_URL, PHP_URL_HOST);
+            $target  = parse_url($path, PHP_URL_HOST);
+            if ($target !== $allowed) {
+                $path = '/';
+            }
             $location = $path;
         } elseif (str_starts_with($path, '/')) {
             if (preg_match('#^/(index\.php)?\?.*#', $path)) {

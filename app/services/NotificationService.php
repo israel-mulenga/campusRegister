@@ -97,13 +97,21 @@ class NotificationService {
         </div></div></body></html>';
     }
 
+    private static function esc(string $val): string {
+        return htmlspecialchars($val, ENT_QUOTES, 'UTF-8');
+    }
+
     private static function templateConfirmation(array $c): string {
+        $nom    = self::esc($c['nom']);
+        $prenom = self::esc($c['prenom']);
+        $dossier = self::esc($c['numero_dossier']);
+        $token   = self::esc($c['token']);
         return self::header() . "
-        <p>Bonjour <strong>{$c['nom']} {$c['prenom']}</strong>,</p>
+        <p>Bonjour <strong>{$nom} {$prenom}</strong>,</p>
         <p>Nous avons bien reçu votre pré-inscription à l'Université Don Bosco de Lubumbashi pour l'année académique 2025-2026. 🎉</p>
         <div class='box'>
-            <strong>📄 Numéro de dossier :</strong> {$c['numero_dossier']}<br>
-            <strong>🔑 Token de suivi :</strong> <code>{$c['token']}</code><br>
+            <strong>📄 Numéro de dossier :</strong> {$dossier}<br>
+            <strong>🔑 Token de suivi :</strong> <code>{$token}</code><br>
             <strong>📅 Date de soumission :</strong> " . date('d/m/Y à H:i') . "<br>
             <strong>📊 Statut actuel :</strong> En attente de traitement
         </div>
@@ -130,12 +138,15 @@ class NotificationService {
             ],
         ];
         $msg = $messages[$statut] ?? ['titre' => 'Mise à jour de votre dossier', 'corps' => 'Votre dossier a été mis à jour.'];
+        $nom    = self::esc($c['nom']);
+        $prenom = self::esc($c['prenom']);
+        $dossier = self::esc($c['numero_dossier']);
 
         return self::header() . "
-        <p>Bonjour <strong>{$c['nom']} {$c['prenom']}</strong>,</p>
+        <p>Bonjour <strong>{$nom} {$prenom}</strong>,</p>
         <h2 style='color:#1F3864'>{$msg['titre']}</h2>
         <div class='box'>
-            <strong>📄 Dossier :</strong> {$c['numero_dossier']}<br>
+            <strong>📄 Dossier :</strong> {$dossier}<br>
             <strong>📊 Nouveau statut :</strong> " . self::statutLabel($statut) . "
         </div>
         <p>{$msg['corps']}</p>
@@ -145,10 +156,13 @@ class NotificationService {
     }
 
     private static function templateCustom(array $c, string $message): string {
+        $nom    = self::esc($c['nom']);
+        $prenom = self::esc($c['prenom']);
+        $dossier = self::esc($c['numero_dossier']);
         return self::header() . "
-        <p>Bonjour <strong>{$c['nom']} {$c['prenom']}</strong>,</p>
+        <p>Bonjour <strong>{$nom} {$prenom}</strong>,</p>
         <p>" . nl2br(htmlspecialchars($message)) . "</p>
-        <div class='box'><strong>Dossier :</strong> {$c['numero_dossier']}</div>
+        <div class='box'><strong>Dossier :</strong> {$dossier}</div>
         <a class='btn' href='" . APP_URL . "/inscription/suivi'>Suivre mon dossier</a>
         <p>Cordialement,<br><strong>L'équipe d'admission – UDBL</strong></p>
         " . self::footer();

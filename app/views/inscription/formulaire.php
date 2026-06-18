@@ -46,6 +46,7 @@
         </div>
 
         <form action="index.php?url=inscription" method="POST" enctype="multipart/form-data" id="multiStepForm" class="p-4 p-md-5">
+            <?= csrfField() ?>
             
             <!-- ÉTAPE 1 : INFORMATIONS PERSONNELLES -->
             <div class="form-step-content text-start" id="step-1">
