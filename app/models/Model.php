@@ -50,5 +50,34 @@ abstract class Model {
         $stmt = self::$db->prepare($query);
         return $stmt->execute(['id' => $id]);
     }
-    
+
+    public static function findOneBy(string $column, mixed $value): ?array {
+        $db = static::getDb();
+        $query = "SELECT * FROM " . static::$table . " WHERE {$column} = ?";
+        $stmt = $db->prepare($query);
+        $stmt->execute([$value]);
+        $row = $stmt->fetch();
+        return $row ?: null;
+    }
+
+    public static function findBy(string $column, mixed $value, string $orderBy = 'id DESC'): array {
+        $db = static::getDb();
+        $query = "SELECT * FROM " . static::$table . " WHERE {$column} = ? ORDER BY {$orderBy}";
+        $stmt = $db->prepare($query);
+        $stmt->execute([$value]);
+        return $stmt->fetchAll();
+    }
+
+    protected static function buildWhereClause(array $filters, array $columnMap): array {
+        $where  = [];
+        $params = [];
+        foreach ($columnMap as $filterKey => $column) {
+            if (!empty($filters[$filterKey])) {
+                $where[]  = "{$column} = ?";
+                $params[] = $filters[$filterKey];
+            }
+        }
+        $whereSQL = $where ? 'WHERE ' . implode(' AND ', $where) : '';
+        return [$whereSQL, $params];
+    }
 }

@@ -76,3 +76,20 @@
         unset($_SESSION['flash'][$key]);
         return $msg;
     }
+
+    function requirePost(string $redirectTo): void {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            redirect($redirectTo);
+        }
+    }
+
+    function fullName(array $person): string {
+        return trim(($person['nom'] ?? '') . ' ' . ($person['prenom'] ?? ''));
+    }
+
+    function renderPublicView(string $viewPath, array $vars = []): void {
+        extract($vars);
+        require __DIR__ . '/../../templates/components/header.php';
+        require $viewPath;
+        require __DIR__ . '/../../templates/components/footer.php';
+    }

@@ -29,7 +29,7 @@ class NotificationService {
     public static function sendConfirmation(array $candidat): bool {
         $sujet  = "✅ Confirmation de pré-inscription – UDBL 2026";
         $corps  = self::templateConfirmation($candidat);
-        return self::send($candidat['email'], $candidat['nom'] . ' ' . $candidat['prenom'], $sujet, $corps, $candidat['id']);
+        return self::send($candidat['email'], fullName($candidat), $sujet, $corps, $candidat['id']);
     }
 
     public static function sendStatusUpdate(array $candidat, string $nouveauStatut): bool {
@@ -40,14 +40,14 @@ class NotificationService {
         ];
         $sujet = $labels[$nouveauStatut] ?? 'Mise à jour de votre dossier – UDBL';
         $corps = self::templateStatus($candidat, $nouveauStatut);
-        return self::send($candidat['email'], $candidat['nom'] . ' ' . $candidat['prenom'], $sujet, $corps, $candidat['id']);
+        return self::send($candidat['email'], fullName($candidat), $sujet, $corps, $candidat['id']);
     }
 
     public static function sendBulk(array $candidats, string $sujet, string $message): int {
         $count = 0;
         foreach ($candidats as $c) {
             $corps = self::templateCustom($c, $message);
-            if (self::send($c['email'], $c['nom'] . ' ' . $c['prenom'], $sujet, $corps, $c['id'])) {
+            if (self::send($c['email'], fullName($c), $sujet, $corps, $c['id'])) {
                 $count++;
             }
             usleep(100000); // 100ms entre chaque envoi
@@ -98,8 +98,9 @@ class NotificationService {
     }
 
     private static function templateConfirmation(array $c): string {
+        $name = fullName($c);
         return self::header() . "
-        <p>Bonjour <strong>{$c['nom']} {$c['prenom']}</strong>,</p>
+        <p>Bonjour <strong>{$name}</strong>,</p>
         <p>Nous avons bien reçu votre pré-inscription à l'Université Don Bosco de Lubumbashi pour l'année académique 2025-2026. 🎉</p>
         <div class='box'>
             <strong>📄 Numéro de dossier :</strong> {$c['numero_dossier']}<br>
@@ -115,6 +116,7 @@ class NotificationService {
     }
 
     private static function templateStatus(array $c, string $statut): string {
+        $name = fullName($c);
         $messages = [
             'dossier_complet' => [
                 'titre' => '📋 Votre dossier est complet !',
@@ -132,7 +134,7 @@ class NotificationService {
         $msg = $messages[$statut] ?? ['titre' => 'Mise à jour de votre dossier', 'corps' => 'Votre dossier a été mis à jour.'];
 
         return self::header() . "
-        <p>Bonjour <strong>{$c['nom']} {$c['prenom']}</strong>,</p>
+        <p>Bonjour <strong>{$name}</strong>,</p>
         <h2 style='color:#1F3864'>{$msg['titre']}</h2>
         <div class='box'>
             <strong>📄 Dossier :</strong> {$c['numero_dossier']}<br>
@@ -145,8 +147,9 @@ class NotificationService {
     }
 
     private static function templateCustom(array $c, string $message): string {
+        $name = fullName($c);
         return self::header() . "
-        <p>Bonjour <strong>{$c['nom']} {$c['prenom']}</strong>,</p>
+        <p>Bonjour <strong>{$name}</strong>,</p>
         <p>" . nl2br(htmlspecialchars($message)) . "</p>
         <div class='box'><strong>Dossier :</strong> {$c['numero_dossier']}</div>
         <a class='btn' href='" . APP_URL . "/inscription/suivi'>Suivre mon dossier</a>
@@ -155,12 +158,6 @@ class NotificationService {
     }
 
     private static function statutLabel(string $s): string {
-        return match($s) {
-            'en_attente'      => '<span style="color:#e67e22">⏳ En attente</span>',
-            'dossier_complet' => '<span style="color:#2980b9">📋 Dossier complet</span>',
-            'admis'           => '<span style="color:#27ae60">✅ Admis(e)</span>',
-            'refuse'          => '<span style="color:#e74c3c">❌ Refusé(e)</span>',
-            default           => $s
-        };
+        return statutBadgeHtml($s);
     }
 }

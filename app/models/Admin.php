@@ -21,10 +21,6 @@ class Admin extends Model {
     }
 
     public static function findByEmail(string $email): ?array {
-        $db = self::getDb();
-        $stmt = $db->prepare("SELECT * FROM administrateur WHERE email = :email");
-        $stmt->execute(['email' => $email]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $row ?: null;
+        return self::findOneBy('email', $email);
     }
 }

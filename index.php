@@ -8,6 +8,7 @@ startSecureSession();
 
 require_once 'config/database.php';
 require_once 'config/app.php';
+require_once 'config/statuts.php';
 require_once 'app/helpers/Validator.php';
 require_once 'app/models/Model.php';
 require_once 'app/models/Candidat.php';

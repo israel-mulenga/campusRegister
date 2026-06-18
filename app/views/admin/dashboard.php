@@ -3,14 +3,8 @@ $pageTitle = 'Tableau de bord';
 $pageIcon  = 'tachometer-alt';
 require __DIR__ . '/_layout.php';
 
-// Couleurs statuts
-$statutColors = [
-    'en_attente'      => ['bg'=>'#fff3cd','txt'=>'#7d5a00','icon'=>'clock'],
-    'dossier_complet' => ['bg'=>'#cfe2ff','txt'=>'#084298','icon'=>'folder-open'],
-    'admis'           => ['bg'=>'#d1e7dd','txt'=>'#0a3622','icon'=>'check-circle'],
-    'refuse'          => ['bg'=>'#f8d7da','txt'=>'#58151c','icon'=>'times-circle'],
-];
-$statLabel = ['en_attente'=>'En attente','dossier_complet'=>'Dossier complet','admis'=>'Admis','refuse'=>'Refusé'];
+$statutColors = STATUT_COLORS;
+$statLabel = STATUT_LABELS;
 
 // Construire tableau statuts indexé
 $byStatut = [];
@@ -80,7 +74,7 @@ foreach ($statsStatut as $s) $byStatut[$s['statut']] = (int)$s['nb'];
                 <?php foreach ($recentCandidats as $c): ?>
                     <tr>
                         <td><code class="small"><?= htmlspecialchars($c['numero_dossier']) ?></code></td>
-                        <td class="fw-semibold"><?= htmlspecialchars($c['nom'].' '.$c['prenom']) ?></td>
+                        <td class="fw-semibold"><?= e(fullName($c)) ?></td>
                         <td><?= htmlspecialchars($c['filiere_nom'] ?? '—') ?></td>
                         <td><span class="badge-statut badge-<?= $c['statut'] ?>"><?= $statLabel[$c['statut']] ?? $c['statut'] ?></span></td>
                         <td class="text-muted small"><?= date('d/m/Y', strtotime($c['date_creation'])) ?></td>

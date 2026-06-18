@@ -14,15 +14,17 @@ class InscriptionController {
         $oldRaw    = flash('old');
         $errors   = $errorsRaw ? json_decode($errorsRaw, true) : [];
         $old      = $oldRaw    ? json_decode($oldRaw, true)    : [];
-        $page     = 'pre-inscription';
 
-        require __DIR__ . '/../../templates/components/header.php';
-        require __DIR__ . '/../views/inscription/formulaire.php';
-        require __DIR__ . '/../../templates/components/footer.php';
+        renderPublicView(__DIR__ . '/../views/inscription/formulaire.php', [
+            'page'     => 'pre-inscription',
+            'filieres' => $filieres,
+            'errors'   => $errors,
+            'old'      => $old,
+        ]);
     }
 
     public function store(): void {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') { redirect('/?url=inscription'); }
+        requirePost('/?url=inscription');
 
         $data   = $_POST;
         $errors = [];
@@ -127,9 +129,11 @@ class InscriptionController {
             }
         }
 
-        $page = 'suivi-inscription';
-        require __DIR__ . '/../../templates/components/header.php';
-        require __DIR__ . '/../views/inscription/suivi.php';
-        require __DIR__ . '/../../templates/components/footer.php';
+        renderPublicView(__DIR__ . '/../views/inscription/suivi.php', [
+            'page'          => 'suivi-inscription',
+            'candidat'      => $candidat,
+            'notifications' => $notifications,
+            'error'         => $error,
+        ]);
     }
 }

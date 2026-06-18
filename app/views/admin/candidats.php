@@ -2,7 +2,7 @@
 $pageTitle = 'Candidats';
 $pageIcon  = 'users';
 require __DIR__ . '/_layout.php';
-$statLabel = ['en_attente'=>'En attente','dossier_complet'=>'Dossier complet','admis'=>'Admis','refuse'=>'Refusé'];
+$statLabel = STATUT_LABELS;
 $success = flash('success');
 ?>
 
@@ -62,7 +62,7 @@ $success = flash('success');
             <?php foreach ($result['data'] as $c): ?>
                 <tr>
                     <td><code class="small text-primary"><?= htmlspecialchars($c['numero_dossier']) ?></code></td>
-                    <td class="fw-semibold"><?= htmlspecialchars($c['nom'].' '.$c['prenom']) ?></td>
+                    <td class="fw-semibold"><?= e(fullName($c)) ?></td>
                     <td class="text-muted small"><?= htmlspecialchars($c['email']) ?></td>
                     <td><?= htmlspecialchars($c['filiere_nom'] ?? '—') ?></td>
                     <td><span class="badge-statut badge-<?= $c['statut'] ?>"><?= $statLabel[$c['statut']] ?? $c['statut'] ?></span></td>
@@ -82,7 +82,7 @@ $success = flash('success');
                                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body pb-0">
-                                <p class="small text-muted mb-2">Candidat : <strong><?= htmlspecialchars($c['nom'].' '.$c['prenom']) ?></strong></p>
+                                <p class="small text-muted mb-2">Candidat : <strong><?= e(fullName($c)) ?></strong></p>
                                 <form method="POST" action="index.php?url=admin/candidats/statut">
                                     <input type="hidden" name="id" value="<?= $c['id'] ?>">
                                     <select name="statut" class="form-select form-select-sm mb-3">

@@ -3,6 +3,14 @@
 class DatabaseConfig {
     private static $conn = null;
 
+    private static function pdoOptions(): array {
+        return [
+            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES   => false,
+        ];
+    }
+
     public static function getConnection() {
         if (self::$conn === null) {
             try {
@@ -20,11 +28,7 @@ class DatabaseConfig {
                         "pgsql:host={$host};port={$port};dbname={$dbname};sslmode=require",
                         $user,
                         $pass,
-                        [
-                            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-                            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                            PDO::ATTR_EMULATE_PREPARES   => false,
-                        ]
+                        self::pdoOptions()
                     );
                 } else {
                     // Local development — MySQL
@@ -32,11 +36,7 @@ class DatabaseConfig {
                         "mysql:host=localhost;dbname=CAMPUSREGISTER_DB;charset=utf8mb4",
                         "CAMPUS_USER",
                         "1234",
-                        [
-                            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-                            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                            PDO::ATTR_EMULATE_PREPARES   => false,
-                        ]
+                        self::pdoOptions()
                     );
                 }
             } catch (PDOException $exception) {
