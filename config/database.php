@@ -27,11 +27,16 @@ class DatabaseConfig {
                         ]
                     );
                 } else {
-                    // Local development — MySQL
+                    // Local development — MySQL (credentials from environment)
+                    $dbHost = getenv('DB_HOST') ?: 'localhost';
+                    $dbName = getenv('DB_NAME') ?: 'CAMPUSREGISTER_DB';
+                    $dbUser = getenv('DB_USER') ?: '';
+                    $dbPass = getenv('DB_PASS') ?: '';
+
                     self::$conn = new PDO(
-                        "mysql:host=localhost;dbname=CAMPUSREGISTER_DB;charset=utf8mb4",
-                        "CAMPUS_USER",
-                        "1234",
+                        "mysql:host={$dbHost};dbname={$dbName};charset=utf8mb4",
+                        $dbUser,
+                        $dbPass,
                         [
                             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
                             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -40,7 +45,8 @@ class DatabaseConfig {
                     );
                 }
             } catch (PDOException $exception) {
-                die("Erreur de connexion : " . $exception->getMessage());
+                error_log("DB connection error: " . $exception->getMessage());
+                die("Erreur de connexion à la base de données.");
             }
         }
         return self::$conn;

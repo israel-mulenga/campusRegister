@@ -19,6 +19,7 @@ require __DIR__ . '/_layout.php';
             </div>
             <div class="card-body">
                 <form method="POST" action="index.php?url=admin/chatbot/add">
+                    <?= csrfField() ?>
                     <div class="mb-2">
                         <label class="form-label small fw-semibold">Mot(s)-clé(s)</label>
                         <input type="text" name="mot_cle" class="form-control form-control-sm" placeholder="ex: inscription inscrire comment" required>
@@ -58,6 +59,7 @@ require __DIR__ . '/_layout.php';
                             <td class="text-center">
                                 <button class="btn btn-xs btn-outline-secondary py-0 px-1 me-1" data-bs-toggle="modal" data-bs-target="#editFaq<?= $faq['id'] ?>" title="Modifier"><i class="fas fa-edit fa-xs"></i></button>
                                 <form method="POST" action="index.php?url=admin/chatbot/delete" class="d-inline" onsubmit="return confirm('Supprimer cette entrée ?')">
+                                    <?= csrfField() ?>
                                     <input type="hidden" name="id" value="<?= $faq['id'] ?>">
                                     <button class="btn btn-xs btn-outline-danger py-0 px-1" title="Supprimer"><i class="fas fa-trash fa-xs"></i></button>
                                 </form>
@@ -73,6 +75,7 @@ require __DIR__ . '/_layout.php';
                                     </div>
                                     <form method="POST" action="index.php?url=admin/chatbot/update">
                                         <div class="modal-body">
+                                            <?= csrfField() ?>
                                             <input type="hidden" name="id" value="<?= $faq['id'] ?>">
                                             <div class="mb-2">
                                                 <label class="form-label small fw-semibold">Mot(s)-clé(s)</label>

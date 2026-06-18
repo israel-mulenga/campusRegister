@@ -17,16 +17,36 @@ class AdminController {
 
     public function loginPost(): void {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') { redirect('/admin/login'); }
+        verifyCsrf();
+
+        $maxAttempts = 5;
+        $lockoutMinutes = 15;
+        $attempts = $_SESSION['login_attempts'] ?? 0;
+        $lastAttempt = $_SESSION['login_last_attempt'] ?? 0;
+
+        if ($attempts >= $maxAttempts && (time() - $lastAttempt) < ($lockoutMinutes * 60)) {
+            flash('login_error', "Trop de tentatives. Réessayez dans {$lockoutMinutes} minutes.");
+            redirect('/admin/login');
+        }
+
+        if ((time() - $lastAttempt) >= ($lockoutMinutes * 60)) {
+            $_SESSION['login_attempts'] = 0;
+        }
+
         $email = trim($_POST['email'] ?? '');
         $mdp   = $_POST['password'] ?? '';
         $admin = Admin::authenticate($email, $mdp);
 
         if ($admin) {
+            $_SESSION['login_attempts'] = 0;
+            session_regenerate_id(true);
             $_SESSION['admin_id']   = $admin['id'];
             $_SESSION['admin_nom']  = $admin['nom'];
             $_SESSION['admin_role'] = $admin['role'];
             redirect('/admin/dashboard');
         } else {
+            $_SESSION['login_attempts'] = ($_SESSION['login_attempts'] ?? 0) + 1;
+            $_SESSION['login_last_attempt'] = time();
             flash('login_error', 'Email ou mot de passe incorrect.');
             redirect('/admin/login');
         }
@@ -63,6 +83,7 @@ class AdminController {
     public function updateStatut(): void {
         requireAdmin();
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') { redirect('/admin/candidats'); }
+        verifyCsrf();
 
         $id     = (int)($_POST['id'] ?? 0);
         $statut = $_POST['statut'] ?? '';
@@ -91,6 +112,7 @@ class AdminController {
     public function sendNotification(): void {
         requireAdmin();
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') { redirect('/admin/notifications'); }
+        verifyCsrf();
 
         $sujet   = sanitize($_POST['sujet'] ?? '');
         $message = sanitize($_POST['message'] ?? '');
@@ -125,6 +147,7 @@ class AdminController {
 
     public function addFaq(): void {
         requireAdmin();
+        verifyCsrf();
         $mot_cle   = sanitize($_POST['mot_cle'] ?? '');
         $reponse   = sanitize($_POST['reponse'] ?? '');
         $categorie = sanitize($_POST['categorie'] ?? 'général');
@@ -137,6 +160,7 @@ class AdminController {
 
     public function updateFaq(): void {
         requireAdmin();
+        verifyCsrf();
         $id        = (int)($_POST['id'] ?? 0);
         $mot_cle   = sanitize($_POST['mot_cle'] ?? '');
         $reponse   = sanitize($_POST['reponse'] ?? '');
@@ -150,6 +174,7 @@ class AdminController {
 
     public function deleteFaq(): void {
         requireAdmin();
+        verifyCsrf();
         $id = (int)($_POST['id'] ?? 0);
         if ($id) {
             ChatbotFaq::delete($id);

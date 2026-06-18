@@ -1,10 +1,20 @@
 <?php
 
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+if (getenv('APP_ENV') === 'development') {
+    ini_set('display_errors', 1);
+    error_reporting(E_ALL);
+} else {
+    ini_set('display_errors', 0);
+    error_reporting(0);
+    ini_set('log_errors', 1);
+}
 
 require_once 'config/session.php';
 startSecureSession();
+
+header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: DENY');
+header('Referrer-Policy: strict-origin-when-cross-origin');
 
 require_once 'config/database.php';
 require_once 'config/app.php';

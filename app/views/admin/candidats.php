@@ -84,6 +84,7 @@ $success = flash('success');
                             <div class="modal-body pb-0">
                                 <p class="small text-muted mb-2">Candidat : <strong><?= htmlspecialchars($c['nom'].' '.$c['prenom']) ?></strong></p>
                                 <form method="POST" action="index.php?url=admin/candidats/statut">
+                                    <?= csrfField() ?>
                                     <input type="hidden" name="id" value="<?= $c['id'] ?>">
                                     <select name="statut" class="form-select form-select-sm mb-3">
                                         <?php foreach ($statLabel as $k=>$v): ?>

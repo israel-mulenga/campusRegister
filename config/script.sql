@@ -183,13 +183,8 @@ INSERT INTO chatbot_faq (mot_cle, reponse, categorie) VALUES
  'général');
 
 -- ── SEEDS : admin par défaut (MDP: Admin2026!) ────────────────
--- Hash généré avec password_hash('Admin2026!', PASSWORD_DEFAULT)
+-- IMPORTANT: Change this password immediately after first login.
 INSERT INTO administrateur (nom, email, mot_de_passe_hash, role) VALUES
 ('Admin2026', 'admin@udbl.ac.cd',
- '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+ '$2y$10$ZsMarH2suZ3vuZ.RycWlHeAE4IbfAHYubDVctQV94mGEqBYMg6W72',
  'super_admin');
-
--- NOTE: Le hash ci-dessus correspond au mot de passe 'password'
--- Pour utiliser 'Admin2026!', exécutez ce PHP une fois :
--- echo password_hash('Admin2026!', PASSWORD_DEFAULT);
--- Puis mettez à jour : UPDATE administrateurs SET mot_de_passe_hash='...' WHERE email='admin@udbl.ac.cd';
