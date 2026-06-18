@@ -76,9 +76,15 @@ class InscriptionController {
         }
 
         // Mettre à jour le numéro de dossier avec l'ID réel
-        $db = DatabaseConfig::getConnection();
-        $db->prepare("UPDATE candidat SET numero_dossier = ? WHERE id = ?")
-           ->execute([generateNumeroDossier($id), $id]);
+        try {
+            $db = DatabaseConfig::getConnection();
+            $stmt = $db->prepare("UPDATE candidat SET numero_dossier = ? WHERE id = ?");
+            if (!$stmt->execute([generateNumeroDossier($id), $id])) {
+                error_log('Failed to update numero_dossier for candidat id: ' . $id);
+            }
+        } catch (\Throwable $e) {
+            error_log('Error updating numero_dossier: ' . $e->getMessage());
+        }
 
         $candidat = $candidatModel->findWithFiliere($id);
 
@@ -90,13 +96,17 @@ class InscriptionController {
         }
 
         // ── Notification email ────────────────────────────────
+        $emailSent = false;
         try {
-            NotificationService::sendConfirmation($candidat);
+            $emailSent = NotificationService::sendConfirmation($candidat);
         } catch (\Throwable $e) {
-            error_log("Notification error: " . $e->getMessage());
+            error_log('Confirmation email error: ' . $e->getMessage());
         }
 
         $_SESSION['confirmation_candidat'] = $candidat;
+        if (!$emailSent) {
+            $_SESSION['confirmation_email_failed'] = true;
+        }
         redirect('/?url=inscription/confirmation');
     }
 

@@ -10,11 +10,15 @@ class DatabaseConfig {
                 if ($databaseUrl) {
                     // Netlify Database — managed PostgreSQL
                     $parsed = parse_url($databaseUrl);
+                    if (!$parsed || empty($parsed['host']) || empty($parsed['path'])) {
+                        error_log('DATABASE_URL is malformed: unable to parse required components');
+                        throw new \RuntimeException('Database configuration error. Please check the DATABASE_URL.');
+                    }
                     $host   = $parsed['host'];
                     $port   = $parsed['port'] ?? 5432;
                     $dbname = ltrim($parsed['path'], '/');
-                    $user   = urldecode($parsed['user']);
-                    $pass   = urldecode($parsed['pass']);
+                    $user   = urldecode($parsed['user'] ?? '');
+                    $pass   = urldecode($parsed['pass'] ?? '');
 
                     self::$conn = new PDO(
                         "pgsql:host={$host};port={$port};dbname={$dbname};sslmode=require",
@@ -40,7 +44,10 @@ class DatabaseConfig {
                     );
                 }
             } catch (PDOException $exception) {
-                die("Erreur de connexion : " . $exception->getMessage());
+                error_log('Database connection failed: ' . $exception->getMessage());
+                throw new \RuntimeException(
+                    'Impossible de se connecter à la base de données. Veuillez réessayer plus tard.'
+                );
             }
         }
         return self::$conn;

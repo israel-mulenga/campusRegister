@@ -10,7 +10,15 @@ class ChatbotController {
             return;
         }
 
-        $body     = json_decode(file_get_contents('php://input'), true);
+        $raw  = file_get_contents('php://input');
+        $body = json_decode($raw, true);
+
+        if (!is_array($body)) {
+            http_response_code(400);
+            echo json_encode(['response' => 'Requête invalide : corps JSON malformé.']);
+            return;
+        }
+
         $question = trim($body['question'] ?? '');
 
         if (strlen($question) < 2) {
@@ -18,8 +26,15 @@ class ChatbotController {
             return;
         }
 
-        $chatbotFaq = new ChatbotFAQ();
-        $response   = $chatbotFaq->search($question);
+        try {
+            $chatbotFaq = new ChatbotFAQ();
+            $response   = $chatbotFaq->search($question);
+        } catch (\Throwable $e) {
+            error_log('Chatbot search error: ' . $e->getMessage());
+            http_response_code(500);
+            echo json_encode(['response' => 'Une erreur interne est survenue. Veuillez réessayer.']);
+            return;
+        }
 
         if (!$response) {
             $response = "Je n'ai pas trouvé de réponse à votre question. 🤔\n\nPour une aide personnalisée, contactez-nous :\n📧 info@udbl.ac.cd\n📞 +243 810 000 000\n🕐 Lun-Ven 8h-16h | Sam 8h-12h";
