@@ -20,35 +20,55 @@ abstract class Model {
     }
 
     public static function findAll(): array {
-        $db = static::getDb();
-        $query = "SELECT * FROM " . static::$table . " ORDER BY id DESC";
-        $stmt = $db->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll();
+        try {
+            $db = static::getDb();
+            $query = "SELECT * FROM " . static::$table . " ORDER BY id DESC";
+            $stmt = $db->prepare($query);
+            $stmt->execute();
+            return $stmt->fetchAll();
+        } catch (\PDOException $e) {
+            error_log(static::$table . '::findAll failed: ' . $e->getMessage());
+            throw $e;
+        }
     }
 
     public static function findById($id): ?array {
-        $db = self::getDb();
-        $query = "SELECT * FROM " . static::$table . " WHERE id = :id";
-        $stmt = self::$db->prepare($query);
-        $stmt->execute(['id' => $id]);
-        $row = $stmt->fetch();
-        return $row ? $row : null;
+        try {
+            $db = static::getDb();
+            $query = "SELECT * FROM " . static::$table . " WHERE id = :id";
+            $stmt = $db->prepare($query);
+            $stmt->execute(['id' => $id]);
+            $row = $stmt->fetch();
+            return $row ? $row : null;
+        } catch (\PDOException $e) {
+            error_log(static::$table . '::findById(' . $id . ') failed: ' . $e->getMessage());
+            throw $e;
+        }
     }
 
     public static function count(): int {
-        $db = self::getDb();
-        $query = "SELECT COUNT(*) as count FROM " . static::$table;
-        $stmt = self::$db->prepare($query);
-        $stmt->execute();
-        return (int)$stmt->fetchColumn();
+        try {
+            $db = static::getDb();
+            $query = "SELECT COUNT(*) as count FROM " . static::$table;
+            $stmt = $db->prepare($query);
+            $stmt->execute();
+            return (int)$stmt->fetchColumn();
+        } catch (\PDOException $e) {
+            error_log(static::$table . '::count failed: ' . $e->getMessage());
+            throw $e;
+        }
     }
 
     public static function deleteById($id): bool {
-        $db = self::getDb();
-        $query = "DELETE FROM " . static::$table . " WHERE id = :id";
-        $stmt = self::$db->prepare($query);
-        return $stmt->execute(['id' => $id]);
+        try {
+            $db = static::getDb();
+            $query = "DELETE FROM " . static::$table . " WHERE id = :id";
+            $stmt = $db->prepare($query);
+            return $stmt->execute(['id' => $id]);
+        } catch (\PDOException $e) {
+            error_log(static::$table . '::deleteById(' . $id . ') failed: ' . $e->getMessage());
+            throw $e;
+        }
     }
     
 }

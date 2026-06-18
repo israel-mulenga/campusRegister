@@ -66,8 +66,12 @@ class NotificationService {
             $mail->send();
             Notification::create($candidatId, 'email', $subject . ' — envoyé à ' . $to, 'envoye');
             return true;
-        } catch (Exception $e) {
-            Notification::create($candidatId, 'email', $subject . ' — ÉCHEC: ' . $e->getMessage(), 'echoue');
+        } catch (\Throwable $e) {
+            try {
+                Notification::create($candidatId, 'email', $subject . ' — ÉCHEC: ' . $e->getMessage(), 'echoue');
+            } catch (\Throwable $dbErr) {
+                error_log("Failed to log notification error: " . $dbErr->getMessage());
+            }
             error_log("Mail Error [{$to}]: " . $e->getMessage());
             return false;
         }

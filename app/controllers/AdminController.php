@@ -69,11 +69,23 @@ class AdminController {
         $valides = ['en_attente','dossier_complet','admis','refuse'];
 
         if ($id && in_array($statut, $valides)) {
-            Candidat::updateStatut($id, $statut);
+            if (!Candidat::updateStatut($id, $statut)) {
+                flash('success', 'Erreur : impossible de mettre à jour le statut.');
+                redirect('/admin/candidats');
+            }
             $candidat = Candidat::findWithFiliere($id);
             if ($candidat && $statut !== 'en_attente') {
-                try { NotificationService::sendStatusUpdate($candidat, $statut); }
-                catch (\Throwable $e) { error_log($e->getMessage()); }
+                try {
+                    $sent = NotificationService::sendStatusUpdate($candidat, $statut);
+                    if (!$sent) {
+                        flash('success', 'Statut mis à jour, mais l\'email de notification n\'a pas pu être envoyé.');
+                        redirect('/admin/candidats');
+                    }
+                } catch (\Throwable $e) {
+                    error_log('Notification error during status update: ' . $e->getMessage());
+                    flash('success', 'Statut mis à jour, mais l\'email de notification a échoué.');
+                    redirect('/admin/candidats');
+                }
             }
             flash('success', 'Statut mis à jour avec succès.');
         }
@@ -129,8 +141,11 @@ class AdminController {
         $reponse   = sanitize($_POST['reponse'] ?? '');
         $categorie = sanitize($_POST['categorie'] ?? 'général');
         if ($mot_cle && $reponse) {
-            ChatbotFaq::save($mot_cle, $reponse, $categorie);
-            flash('faq_success', 'Entrée ajoutée avec succès.');
+            if (ChatbotFaq::save($mot_cle, $reponse, $categorie)) {
+                flash('faq_success', 'Entrée ajoutée avec succès.');
+            } else {
+                flash('faq_success', 'Erreur : impossible d\'ajouter l\'entrée.');
+            }
         }
         redirect('/admin/chatbot');
     }
@@ -142,8 +157,11 @@ class AdminController {
         $reponse   = sanitize($_POST['reponse'] ?? '');
         $categorie = sanitize($_POST['categorie'] ?? 'général');
         if ($id && $mot_cle && $reponse) {
-            ChatbotFaq::update($id, $mot_cle, $reponse, $categorie);
-            flash('faq_success', 'Entrée modifiée avec succès.');
+            if (ChatbotFaq::update($id, $mot_cle, $reponse, $categorie)) {
+                flash('faq_success', 'Entrée modifiée avec succès.');
+            } else {
+                flash('faq_success', 'Erreur : impossible de modifier l\'entrée.');
+            }
         }
         redirect('/admin/chatbot');
     }
@@ -152,8 +170,11 @@ class AdminController {
         requireAdmin();
         $id = (int)($_POST['id'] ?? 0);
         if ($id) {
-            ChatbotFaq::delete($id);
-            flash('faq_success', 'Entrée supprimée.');
+            if (ChatbotFaq::delete($id)) {
+                flash('faq_success', 'Entrée supprimée.');
+            } else {
+                flash('faq_success', 'Erreur : impossible de supprimer l\'entrée.');
+            }
         }
         redirect('/admin/chatbot');
     }

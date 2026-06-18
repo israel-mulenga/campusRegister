@@ -1,13 +1,30 @@
 <?php
 
-ini_set('display_errors', 1);
+require_once 'config/app.php';
+
+if (defined('APP_ENV') && APP_ENV === 'production') {
+    ini_set('display_errors', 0);
+} else {
+    ini_set('display_errors', 1);
+}
 error_reporting(E_ALL);
+
+set_exception_handler(function (\Throwable $e) {
+    error_log('Uncaught exception: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
+    if (!headers_sent()) {
+        http_response_code(500);
+    }
+    if (defined('APP_ENV') && APP_ENV === 'production') {
+        echo 'Une erreur interne est survenue. Veuillez réessayer plus tard.';
+    } else {
+        echo '<pre>' . htmlspecialchars($e->getMessage()) . "\n" . htmlspecialchars($e->getTraceAsString()) . '</pre>';
+    }
+});
 
 require_once 'config/session.php';
 startSecureSession();
 
 require_once 'config/database.php';
-require_once 'config/app.php';
 require_once 'app/helpers/Validator.php';
 require_once 'app/models/Model.php';
 require_once 'app/models/Candidat.php';
