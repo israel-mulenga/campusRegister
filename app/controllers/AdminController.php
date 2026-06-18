@@ -16,7 +16,7 @@ class AdminController {
     }
 
     public function loginPost(): void {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') { redirect('/admin/login'); }
+        requirePost('/admin/login');
         $email = trim($_POST['email'] ?? '');
         $mdp   = $_POST['password'] ?? '';
         $admin = Admin::authenticate($email, $mdp);
@@ -62,11 +62,11 @@ class AdminController {
 
     public function updateStatut(): void {
         requireAdmin();
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') { redirect('/admin/candidats'); }
+        requirePost('/admin/candidats');
 
         $id     = (int)($_POST['id'] ?? 0);
         $statut = $_POST['statut'] ?? '';
-        $valides = ['en_attente','dossier_complet','admis','refuse'];
+        $valides = VALID_STATUTS;
 
         if ($id && in_array($statut, $valides)) {
             Candidat::updateStatut($id, $statut);
@@ -90,7 +90,7 @@ class AdminController {
 
     public function sendNotification(): void {
         requireAdmin();
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') { redirect('/admin/notifications'); }
+        requirePost('/admin/notifications');
 
         $sujet   = sanitize($_POST['sujet'] ?? '');
         $message = sanitize($_POST['message'] ?? '');

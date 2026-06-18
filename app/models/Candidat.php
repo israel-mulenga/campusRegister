@@ -62,12 +62,7 @@ class Candidat extends Model {
     }
 
     public function findByEmail(string $email): ?array {
-        $db = self::getDb();
-        $query = "SELECT * FROM candidat WHERE email = :email";
-        $stmt = $db->prepare($query);
-        $stmt->execute(['email' => $email]);
-        $row = $stmt->fetch();
-        return $row ? $row : null;
+        return self::findOneBy('email', $email);
     }
 
     public static function findByEmailAndToken(string $email, string $token): ?array {
@@ -183,17 +178,10 @@ class Candidat extends Model {
     }
 
     public static function getByFilters(array $filters = []): array {
-        $where  = [];
-        $params = [];
-        if (!empty($filters['statut'])) {
-            $where[] = "statut = ?";
-            $params[] = $filters['statut'];
-        }
-        if (!empty($filters['id_filiere'])) {
-            $where[] = "id_filiere = ?";
-            $params[] = $filters['id_filiere'];
-        }
-        $whereSQL = $where ? 'WHERE ' . implode(' AND ', $where) : '';
+        [$whereSQL, $params] = self::buildWhereClause($filters, [
+            'statut'     => 'statut',
+            'id_filiere' => 'id_filiere',
+        ]);
         $db = self::getDb();
         $stmt = $db->prepare("SELECT * FROM candidat $whereSQL");
         $stmt->execute($params);

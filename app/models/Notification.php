@@ -12,10 +12,7 @@ class Notification extends Model {
     }
 
     public static function forCandidat(int $id_candidat): array {
-        $db = self::getDb();
-        $stmt = $db->prepare("SELECT * FROM notification WHERE id_candidat = ? ORDER BY date_envoi DESC");
-        $stmt->execute([$id_candidat]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return self::findBy('id_candidat', $id_candidat, 'date_envoi DESC');
     }
 
     public static function recentAll(int $limit = 50): array {
